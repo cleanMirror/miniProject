@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <meta charset="EUC-KR">
+    <title>Insert title here</title>
+    <link rel="stylesheet" href="css/total.css">
+</head>
+
+<body>
+    <div id="app">
+        <header id="header">
+            <div>header</div>
+        </header>
+        <section id="container" class="boxEffect" style="height: 500px;">
+            <div class="flexLine">
+                <input v-if="!isCheckedId" class="idBox" type="text" placeholder="아이디" v-model="info.userId" ref="idBox" @focus="fnFocus" @blur="fnBlur">
+                <input v-else disabled class="idBox" type="text" placeholder="아이디" v-model="info.userId">
+                <div class="checkBtn" @click="fnIdCheck">중복확인</div>
+            </div>
+            <input type="password" placeholder="비밀번호" v-model="info.pwd" @keyup="fnPwdPress" @focus="fnFocus" @blur="fnBlur">
+            <input type="password" placeholder="비밀번호 확인" v-model="checkPwd" @keyup="fnPwdPress" @focus="fnFocus" @blur="fnBlur">
+            <div class="pwdText" ref="pwdText">{{pwdText}}</div>
+            <div class="flexLine">
+                <input class="idBox" type="text" placeholder="유저 닉네임" v-model="info.nickname" @focus="fnFocus" @blur="fnBlur">
+                <div class="checkBtn" @click="fnNicknameCheck">유저확인</div>
+            </div>
+            <div class="button" @click="fnSignUp">가입하기</div>
+        </section>
+        <footer id="footer">
+            <div>footer</div>
+        </footer>
+    </div>
+</body>
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                info : {
+                    userId : "",
+                    pwd : "",
+                    nickname : ""
+                },
+                checkPwd : "",
+                isCheckedId : false,
+                pwdText: "비밀번호를 입력해주세요."
+            };
+        },
+        methods: {
+            fnFocus(event) {
+                event.srcElement.style.borderColor = "red";
+                event.srcElement.style.outline = "none";
+            },
+            fnBlur(event) {
+                event.srcElement.style.borderColor = "black";
+                event.srcElement.style.outline = "none";
+            },
+            fnPwdPress() {
+                if (this.info.pwd.length < 8) {
+                    this.pwdText = "비밀번호는 8글자 이상이어야 합니다.";
+                    this.$refs.pwdText.style.color = "red";
+                    return;
+                }
+
+                if (this.info.pwd != this.checkPwd) {
+                    this.pwdText = "비밀번호가 다릅니다.";
+                    this.$refs.pwdText.style.color = "red";
+                    return;
+                } else {
+                    this.pwdText = "비밀번호가 일치합니다.";
+                    this.$refs.pwdText.style.color = "green";
+                    return;
+                }
+            },
+            fnIdCheck() {
+                if (this.info.userId.length < 5) {
+                    alert("아이디는 5글자 이상이어야 합니다.");
+                    this.$refs.idBox.focus();
+                    return;
+                }
+
+                $.ajax({
+                   url: `http://localhost:3000/idCheck`,
+                   dataType: "json",
+                   type: "POST",
+                   data: JSON.stringify(this.info),
+                   contentType: "application/json",
+                   success: (data) => {
+                        if (data.length > 0) {
+                            alert('중복된 아이디입니다.');
+                        } else {
+                            alert('사용 가능한 아이디입니다.');
+                            this.isCheckedId = true;
+                        }
+                   }
+                });
+            },
+            fnNicknameCheck() {
+                $.ajax({
+                   url: `http://localhost:3000/nicknameCheck`,
+                   dataType: "json",
+                   type: "POST",
+                   data: JSON.stringify(this.info),
+                   contentType: "application/json",
+                   success: (data) => {
+                        if (data.length > 0) {
+                            alert('이미 등록된 계정입니다.');
+                        } else {
+                            alert('api에 질의해야합니다.');
+                            // TODO: api에 쿼리 요청해와야함
+                        }
+                   }
+                });
+            },
+            fnSignUp() {
+                if (this.info.pwd.length == 0) {
+                    alert("비밀번호를 입력해주세요");
+                    
+                    return;
+                }
+
+                if (this.checkPwd.length == 0) {
+                    alert("비밀번호 확인을 입력해주세요");
+                    return;
+                }
+
+                if (this.info.nickname.length == 0) {
+                    alert("닉네임을 입력해주세요");
+                    return;
+                }
+
+                if (this.info.pwd.length < 8) {
+                    alert("비밀번호는 8글자 이상이어야합니다.");
+                    return;
+                }
+
+                if (this.info.pwd != this.checkPwd) {
+                    alert("비밀번호가 같지 않습니다.");
+                    return;
+                }
+
+                $.ajax({
+                   url: `http://localhost:3000/signUp`,
+                   dataType: "json",
+                   type: "POST",
+                   data: JSON.stringify(this.info),
+                   contentType: "application/json",
+                   success: (data) => {
+                        alert("가입되었습니다!");
+                        location.href = "login.html";
+                   }
+                });
+            }
+        },
+        mounted() {
+            
+        }
+    });
+    app.mount('#app');
+</script>
+
+</html>

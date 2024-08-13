@@ -1,0 +1,230 @@
+/* 전역 초기화 */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* header */
+
+#header {
+    width: 100vw;
+    height: 100px;
+    background-color: #eee;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+#header .Logo {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-color: #ddd;
+    margin: 16px;
+}
+
+#header .menuItem {
+    margin: 16px;
+}
+
+#header .button {
+    margin: 16px;
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-color: #ff8850;
+}
+
+/* container */
+
+#container {
+    width: 500px;
+    height: 300px;
+    background-color: #ffffff;
+    margin: 10vh auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#gridContainer {
+    width: 700px;
+    height: 550px;
+    background-color: #ffffff;
+    margin: 10vh auto;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-areas:
+        "area1 area2 area2"
+        "area3 area4 area5"
+    ;
+}
+
+.area1 {
+    grid-area: area1;
+    background-color: #aaa;
+}
+.area2 {
+    grid-area: area2;
+    background-color: #bbb;
+    padding: 30px;
+}
+.area3 {
+    grid-area: area3;
+    background-color: #ccc;
+}
+.area4 {
+    grid-area: area4;
+    background-color: #ddd;
+}
+.area5 {
+    grid-area: area5;
+    background-color: #eee;
+}
+
+.flexArea {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#gridContainer .rankImg {
+    display: inline-block;
+    width: 80%;
+    height: 80%;
+    margin: 10%;
+    background-color: #ffaaff;
+}
+
+#gridContainer .charImg {
+    display: inline-block;
+    width: 80%;
+    height: 80%;
+    margin: 10%;
+    margin-bottom: 0px;
+    background-color: #ffaaff;
+}
+
+.boxEffect {
+    box-shadow: 3px 3px 3px #808080;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+
+#container input {
+    width: 400px;
+    height: 50px;
+    margin: 8px;
+    border-radius: 10px;
+}
+
+#container .flexLine {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#container .idBox {
+    width: 315px;
+    height: 50px;
+    margin: 8px;
+    border-radius: 10px;
+}
+
+#container .pwdText {
+    font-size: 12px;
+    margin-left: 32px;
+    margin-right: auto;
+}
+
+#container .checkBtn {
+    display: inline-block;
+    width: 70px;
+    height: 50px;
+    margin: 8px;
+    border-radius: 10px;
+    background-color: #ff9191;
+    color: white;
+    line-height: 50px;
+    text-align: center;
+}
+
+#container .checkBtn:hover {
+    color: white;
+    background-color: #ff8850;
+}
+
+#container .button {
+    width: 400px;
+    height: 50px;
+    margin: 8px;
+    border-radius: 10px;
+    background-color: #ff9191;
+    text-align: center;
+    line-height: 50px;
+}
+
+#container .button:hover { 
+    color: white;
+    background-color: #ff8850;
+}
+
+#charContainer {
+    width: 1000px;
+    height: 600px;
+    background-color: #ffffff;
+    margin: 10vh auto;
+    padding: 16px;
+    overflow-y: scroll;
+    /* display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; */
+}
+
+#tableStats {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+    /* border: 1px solid black; */
+    text-align: center;
+}
+
+#tableStats tr, th, td {
+    border: 1px solid black;
+    margin: 8px;
+}
+
+.statsChar {
+    border: 0;
+    text-align: left;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.statsCharImg {
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    margin: 16px;
+    background-color: #ffaaff;
+}
+
+/* footer */
+
+#footer {
+    width: 100vw;
+    height: 100px;
+    background-color: #aaa;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+}

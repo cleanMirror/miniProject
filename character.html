@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <meta charset="EUC-KR">
+    <title>Insert title here</title>
+    <link rel="stylesheet" href="css/total.css">
+</head>
+
+<body>
+    <div id="app">
+        <header id="header">
+            <div class="Logo">Logo</div>
+            <div class="menuItem" @click="fnNavProfile">프로필</div>
+            <div class="menuItem" @click="fnNavChar">캐릭터 통계</div>
+            <div class="button" @click="fnLogout">로그아웃</div>
+            <div class="button" @click="fnNavInit">전적 갱신</div>
+        </header>
+        <section id="charContainer" class="boxEffect">
+            <div>통계</div>
+            <table id="tableStats">
+                <tr>
+                    <th>캐릭터</th>
+                    <th>승률</th>
+                    <th>평균 RP 획득률</th>
+                    <th>평균 딜량</th>
+                    <th>최근 순위</th>
+                </tr>
+                <tr v-for="n in 20">
+                    <td class="statsChar">
+                        <div class="statsCharImg">charImg</div>
+                        <div>
+                            <div>버니스</div>
+                            <div>155판</div>
+                        </div>
+                    </td>
+                    <td>25.0%</td>
+                    <td>144 RP</td>
+                    <td>15,000</td>
+                    <td>1 2 3 4 5 6 7 8 1 2</td>
+                </tr>
+            </table>
+        </section>
+        <footer id="footer">
+            <div>footer</div>
+        </footer>
+    </div>
+</body>
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                
+            };
+        },
+        methods: {
+            fnNavProfile() {
+                location.href = "profile.html";
+            },
+            fnNavChar() {
+                location.href = "character.html";
+            },
+            fnLogout() {
+                location.href = "login.html";
+            },
+            fnNavInit() {
+                alert("새로고침 버튼");
+            }
+        },
+        mounted() {
+        }
+    });
+    app.mount('#app');
+</script>
+
+</html>
