@@ -46,7 +46,7 @@
                    contentType: "application/json",
                    success: (data) => {
                         if (data.length > 0) {
-                            // TODO : 로그인 세션 만들기
+                            sessionStorage.setItem("userInfo", JSON.stringify(data[ 0 ]) );
                             location.href = "Profile.html";
                         } else {
                             alert("아이디나 패스워드를 확인하세요.");
@@ -59,6 +59,7 @@
             }
         },
         mounted() {
+            sessionStorage.removeItem("userInfo");
         }
     });
     app.mount('#app');

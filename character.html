@@ -20,27 +20,29 @@
             <div class="button" @click="fnNavInit">전적 갱신</div>
         </header>
         <section id="charContainer" class="boxEffect">
-            <div>통계</div>
+            <h3>캐릭터 통계</h3>
             <table id="tableStats">
                 <tr>
                     <th>캐릭터</th>
-                    <th>승률</th>
-                    <th>평균 RP 획득률</th>
+                    <th>평균 순위</th>
                     <th>평균 딜량</th>
-                    <th>최근 순위</th>
+                    <th>평균 탱킹</th>
+                    <th>평균 힐량</th>
+                    <th>평균 RP 획득량</th>
                 </tr>
-                <tr v-for="n in 20">
+                <tr v-for="item of charInfo">
                     <td class="statsChar">
                         <div class="statsCharImg">charImg</div>
                         <div>
-                            <div>버니스</div>
-                            <div>155판</div>
+                            <div>{{item.CHARACTER_NUM}}</div>
+                            <div>{{item.MATCHES}}판</div>
                         </div>
                     </td>
-                    <td>25.0%</td>
-                    <td>144 RP</td>
-                    <td>15,000</td>
-                    <td>1 2 3 4 5 6 7 8 1 2</td>
+                    <td>{{item.GAME_RANK}}</td>
+                    <td>{{item.DAMAGE_TO_PLAYER}}</td>
+                    <td>{{item.DAMAGE_FROM_PLAYER}}</td>
+                    <td>{{item.TEAM_RECOVER}}</td>
+                    <td>{{item.MMR_GAIN}}</td>
                 </tr>
             </table>
         </section>
@@ -53,7 +55,7 @@
     const app = Vue.createApp({
         data() {
             return {
-                
+                charInfo : []
             };
         },
         methods: {
@@ -64,13 +66,38 @@
                 location.href = "character.html";
             },
             fnLogout() {
+                sessionStorage.removeItem("userInfo");
                 location.href = "login.html";
             },
             fnNavInit() {
                 alert("새로고침 버튼");
+            },
+            fnLoginCheck() {
+                var session = sessionStorage.getItem("userInfo");
+                if (session == null) {
+                    alert("로그인이 필요합니다.");
+                    location.href = "login.html";
+                }
+            },
+            fnDataInit() {
+                var userId = JSON.parse(sessionStorage.getItem("userInfo") ).USERNUM;
+                
+                $.ajax({
+                   url: `http://localhost:3000/charInit`,
+                   dataType: "json",
+                   type: "POST",
+                   data: JSON.stringify({"userId" : userId}),
+                   contentType: "application/json",
+                   success: (data) => {
+                        this.charInfo = data;
+                        console.log(this.charInfo);
+                   }
+                });
             }
         },
         mounted() {
+            this.fnLoginCheck();
+            this.fnDataInit();
         }
     });
     app.mount('#app');

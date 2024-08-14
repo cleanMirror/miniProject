@@ -51,7 +51,7 @@
     const app = Vue.createApp({
         data() {
             return {
-                
+
             };
         },
         methods: {
@@ -62,13 +62,76 @@
                 location.href = "character.html";
             },
             fnLogout() {
+                sessionStorage.removeItem("userInfo");
                 location.href = "login.html";
             },
             fnNavInit() {
-                alert("새로고침 버튼");
+                this.fnApiRequest("");
+            },
+            fnApiRequest(next) {
+
+                // 1초에 1request 제한이 걸려있음.
+                this.sleep(1000);
+
+                var userNum = JSON.parse(sessionStorage.getItem("userInfo") );
+
+                var urlStr = "";
+                if (next == "") {
+                    urlStr = `https://open-api.bser.io/v1/user/games/${userNum.USERNUM}`;
+                } else {
+                    urlStr = `https://open-api.bser.io/v1/user/games/${userNum.USERNUM}?next=${next}`;
+                }
+
+                $.ajax({
+                   url: urlStr,
+                   dataType: "json",
+                   type: "GET",
+                   contentType: "application/json",
+                   headers: {
+                        "accept"    : "application/json",
+                        "x-api-key" : "2hjkR0q4z62fTg87aY6O3giO9jcQ70C7rP1uSwwc"
+                   },
+                   success: (data) => {
+                        console.log("진입!");
+                        if (data.next == undefined) {
+                            console.log("exit!");
+                            return;
+                        }
+
+                        var games = [];
+                        for (var game of data.userGames) {
+                            if (game.seasonId == 25)
+                                games.push(game);
+                        }
+
+                        var userNum = JSON.parse(sessionStorage.getItem("userInfo") );
+                        $.ajax({
+                            url: `http://localhost:3000/init`,
+                            dataType: "json",
+                            type: "POST",
+                            data: JSON.stringify({"userGames" : games}),
+                            contentType: "application/json",
+                            success: (data) => {
+                                console.log(data);
+                            }
+                        });
+
+                        this.fnApiRequest(data.next);
+                   }
+                });
+            },
+            sleep(time) {
+                const wakeUpTime = Date.now() + time;
+                while (Date.now() < wakeUpTime) {}
             }
         },
         mounted() {
+            var session = sessionStorage.getItem("userInfo");
+
+            if (session == null) {
+                alert("로그인이 필요합니다.");
+                location.href = "login.html";
+            }
         }
     });
     app.mount('#app');

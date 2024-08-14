@@ -21,11 +21,12 @@
                 <input v-else disabled class="idBox" type="text" placeholder="아이디" v-model="info.userId">
                 <div class="checkBtn" @click="fnIdCheck">중복확인</div>
             </div>
-            <input type="password" placeholder="비밀번호" v-model="info.pwd" @keyup="fnPwdPress" @focus="fnFocus" @blur="fnBlur">
-            <input type="password" placeholder="비밀번호 확인" v-model="checkPwd" @keyup="fnPwdPress" @focus="fnFocus" @blur="fnBlur">
+            <input type="password" placeholder="비밀번호" v-model="info.pwd" @keyup="fnPwdPress" ref="pwdBox" @focus="fnFocus" @blur="fnBlur">
+            <input type="password" placeholder="비밀번호 확인" v-model="checkPwd" @keyup="fnPwdPress" ref="pwdCheckBox" @focus="fnFocus" @blur="fnBlur">
             <div class="pwdText" ref="pwdText">{{pwdText}}</div>
             <div class="flexLine">
-                <input class="idBox" type="text" placeholder="유저 닉네임" v-model="info.nickname" @focus="fnFocus" @blur="fnBlur">
+                <input v-if="!isCheckedNickname" class="idBox" type="text" placeholder="유저 닉네임" v-model="info.nickname" ref="nicknameBox" @focus="fnFocus" @blur="fnBlur">
+                <input v-else disabled class="idBox" type="text" placeholder="유저 닉네임" v-model="info.nickname" @focus="fnFocus" @blur="fnBlur">
                 <div class="checkBtn" @click="fnNicknameCheck">유저확인</div>
             </div>
             <div class="button" @click="fnSignUp">가입하기</div>
@@ -42,10 +43,12 @@
                 info : {
                     userId : "",
                     pwd : "",
-                    nickname : ""
+                    nickname : "",
+                    userNum : ""
                 },
                 checkPwd : "",
                 isCheckedId : false,
+                isCheckedNickname : false,
                 pwdText: "비밀번호를 입력해주세요."
             };
         },
@@ -99,46 +102,67 @@
                 });
             },
             fnNicknameCheck() {
-                $.ajax({
-                   url: `http://localhost:3000/nicknameCheck`,
-                   dataType: "json",
-                   type: "POST",
-                   data: JSON.stringify(this.info),
-                   contentType: "application/json",
-                   success: (data) => {
-                        if (data.length > 0) {
-                            alert('이미 등록된 계정입니다.');
-                        } else {
-                            alert('api에 질의해야합니다.');
-                            // TODO: api에 쿼리 요청해와야함
-                        }
-                   }
-                });
-            },
-            fnSignUp() {
-                if (this.info.pwd.length == 0) {
-                    alert("비밀번호를 입력해주세요");
-                    
-                    return;
-                }
-
-                if (this.checkPwd.length == 0) {
-                    alert("비밀번호 확인을 입력해주세요");
-                    return;
-                }
-
                 if (this.info.nickname.length == 0) {
                     alert("닉네임을 입력해주세요");
                     return;
                 }
 
+                $.ajax({
+                   url: `https://open-api.bser.io/v1/user/nickname?query=${this.info.nickname}`,
+                   dataType: "json",
+                   type: "GET",
+                   contentType: "application/json",
+                   headers: {
+                        "accept"    : "application/json",
+                        "x-api-key" : "2hjkR0q4z62fTg87aY6O3giO9jcQ70C7rP1uSwwc"
+                   },
+                   success: (data) => {
+                        console.log(data);
+                        if (data.code == 200) {
+                            alert("계정이 확인되었습니다.");
+                            this.info.userNum = data.user.userNum;
+                            this.isCheckedNickname = true;
+                        } else {
+                            alert("존재하지 않는 계정입니다.");
+                            this.$refs.nicknameBox.focus();
+                        }
+                   }
+                });
+            },
+            fnSignUp() {
+                if (!this.isCheckedId) {
+                    alert("아이디 중복 확인을 해주세요.");
+                    this.$refs.idBox.focus();
+                    return;
+                }
+
+                if (this.info.pwd.length == 0) {
+                    alert("비밀번호를 입력해주세요");
+                    this.$refs.pwdBox.focus();
+                    return;
+                }
+
+                if (this.checkPwd.length == 0) {
+                    alert("비밀번호 확인을 입력해주세요");
+                    this.$refs.pwdCheckBox.focus();
+                    return;
+                }
+
                 if (this.info.pwd.length < 8) {
                     alert("비밀번호는 8글자 이상이어야합니다.");
+                    this.$refs.pwdBox.focus();
                     return;
                 }
 
                 if (this.info.pwd != this.checkPwd) {
                     alert("비밀번호가 같지 않습니다.");
+                    this.$refs.pwdBox.focus();
+                    return;
+                }
+
+                if (!this.isCheckedNickname) {
+                    alert("닉네임 인증을 해주세요.");
+                    this.$refs.nicknameBox.focus();
                     return;
                 }
 
