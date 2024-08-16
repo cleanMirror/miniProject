@@ -12,6 +12,9 @@
 
 <body>
     <div id="app">
+        <div v-if="isLoading" id="loading">
+            <div id="spinner"></div>
+        </div>
         <header id="header">
             <div class="Logo">Logo</div>
             <div class="menuItem" @click="fnNavProfile">프로필</div>
@@ -19,27 +22,42 @@
             <div class="button" @click="fnLogout">로그아웃</div>
             <div class="button" @click="fnNavInit">전적 갱신</div>
         </header>
-        <section id="gridContainer" class="boxEffect">
+        <section id="gridContainer">
             <div class="area1">
-                <div class="rankImg">rankImg</div>
+                <div class="rankImg"      v-if="userInfo.MMR <= 799" >아이언</div>
+                <div class="rankImg" v-else-if="userInfo.MMR <= 1599">브론즈</div>
+                <div class="rankImg" v-else-if="userInfo.MMR <= 2599">실버</div>
+                <div class="rankImg" v-else-if="userInfo.MMR <= 3799">골드</div>
+                <div class="rankImg" v-else-if="userInfo.MMR <= 5199">플래티넘</div>
+                <div class="rankImg" v-else-if="userInfo.MMR <= 6799">다이아몬드</div>
+                <div class="rankImg" v-else>미스릴 이상</div>
             </div>
             <div class="area2">
-                <div>닉네임</div>
-                <div>프리시즌 4</div>
-                <div>플래티넘 3</div>
-                <div>4567 RP</div>
+                <h1>{{userInfo.NICKNAME}}</h1>
+                <h6>정규시즌 4</h6>
+                <div>{{rankTier}}</div>
+                <h2>{{userInfo.MMR}} RP</h2>
             </div>
             <div class="area3 flexArea">
-                <div class="charImg">charImg</div>
-                <div>모스트1</div>
+                <div class="charImg">{{mostCharInfo[ 0 ].char}}</div>
+                <div>
+                    <div>승률 {{mostCharInfo[ 0 ].avgWins}}</div>
+                    <div>판수 {{mostCharInfo[ 0 ].totalGame}}</div>
+                </div>
             </div>
             <div class="area4 flexArea">
-                <div class="charImg">charImg</div>
-                <div>모스트2</div>
+                <div class="charImg">{{mostCharInfo[ 1 ].char}}</div>
+                <div>
+                    <div>승률 {{mostCharInfo[ 1 ].avgWins}}</div>
+                    <div>판수 {{mostCharInfo[ 1 ].totalGame}}</div>
+                </div>
             </div>
             <div class="area5 flexArea">
-                <div class="charImg">charImg</div>
-                <div>모스트3</div>
+                <div class="charImg">{{mostCharInfo[ 2 ].char}}</div>
+                <div>
+                    <div>승률 {{mostCharInfo[ 2 ].avgWins}}</div>
+                    <div>판수 {{mostCharInfo[ 2 ].totalGame}}</div>
+                </div>
             </div>
         </section>
         <footer id="footer">
@@ -51,7 +69,11 @@
     const app = Vue.createApp({
         data() {
             return {
-
+                userInfo: {},
+                isLoading: false,
+                rankTier: "",
+                mostCharInfo: [{}, {}, {}],
+                isNext : true
             };
         },
         methods: {
@@ -66,72 +88,180 @@
                 location.href = "login.html";
             },
             fnNavInit() {
+                this.isLoading = true;
+                this.fnSetUpdateTime();
                 this.fnApiRequest("");
             },
+            fnSetUpdateTime() {
+                $.ajax({
+                    url: `http://localhost:3000/updateTime`,
+                    dataType: "json",
+                    type: "POST",
+                    data: JSON.stringify({ "userId": this.userInfo.ID }),
+                    contentType: "application/json",
+                    success: (data) => {
+                        var info = sessionStorage.getItem("userInfo");
+                        var jsonInfo = JSON.parse(info);
+
+                        jsonInfo.UPDATETIME = data[0].UPDATETIME;
+                        sessionStorage.setItem("userInfo", JSON.stringify(jsonInfo));
+                    }
+                });
+            },
+            // 한번에 다 주는 방식이 아니고, 10경기씩 페이지로 나누어 제공한다.
+            // 그래서 next로 다음 페이지 요청을 보내야한다..
+            // 이를 재귀 함수로 구현함.
             fnApiRequest(next) {
 
-                // 1초에 1request 제한이 걸려있음.
+                // 1초에 1 request 제한이 걸려있음.
                 this.sleep(1000);
 
-                var userNum = JSON.parse(sessionStorage.getItem("userInfo") );
+                var userNum = this.userInfo.USERNUM;
 
                 var urlStr = "";
                 if (next == "") {
-                    urlStr = `https://open-api.bser.io/v1/user/games/${userNum.USERNUM}`;
+                    urlStr = `https://open-api.bser.io/v1/user/games/${userNum}`;
                 } else {
-                    urlStr = `https://open-api.bser.io/v1/user/games/${userNum.USERNUM}?next=${next}`;
+                    urlStr = `https://open-api.bser.io/v1/user/games/${userNum}?next=${next}`;
                 }
 
                 $.ajax({
-                   url: urlStr,
-                   dataType: "json",
-                   type: "GET",
-                   contentType: "application/json",
-                   headers: {
-                        "accept"    : "application/json",
-                        "x-api-key" : "2hjkR0q4z62fTg87aY6O3giO9jcQ70C7rP1uSwwc"
-                   },
-                   success: (data) => {
-                        console.log("진입!");
-                        if (data.next == undefined) {
-                            console.log("exit!");
+                    url: urlStr,
+                    dataType: "json",
+                    type: "GET",
+                    contentType: "application/json",
+                    headers: {
+                        "accept": "application/json",
+                        "x-api-key": "2hjkR0q4z62fTg87aY6O3giO9jcQ70C7rP1uSwwc"
+                    },
+                    success: (data) => {
+                        // 재귀 종료 조건
+                        if (data.next == undefined || !this.isNext) {
+                            // request가 겹치지 않게 마지막에 실행
+                            this.fnUpdateMMR();
                             return;
                         }
 
+                        // 현재 시즌만 다룸
                         var games = [];
                         for (var game of data.userGames) {
                             if (game.seasonId == 25)
                                 games.push(game);
                         }
 
-                        var userNum = JSON.parse(sessionStorage.getItem("userInfo") );
+                        // 10게임씩 db에 저장
                         $.ajax({
                             url: `http://localhost:3000/init`,
                             dataType: "json",
                             type: "POST",
-                            data: JSON.stringify({"userGames" : games}),
+                            data: JSON.stringify({ "userGames": games }),
                             contentType: "application/json",
                             success: (data) => {
-                                console.log(data);
+                                // db에서 중첩된 레코드를 발견하면 api질의를 중단해야 함.
+                                if (!data[ 0 ].next) {
+                                    this.isNext = false;
+                                }
                             }
                         });
 
+                        // 재귀 호출
                         this.fnApiRequest(data.next);
-                   }
+                    }
                 });
+            },
+            fnUpdateMMR() {
+
+                var userNum = this.userInfo.USERNUM;
+
+                $.ajax({
+                    url: `https://open-api.bser.io/v1/user/stats/${userNum}/25`,
+                    dataType: "json",
+                    type: "GET",
+                    contentType: "application/json",
+                    headers: {
+                        "accept": "application/json",
+                        "x-api-key": "2hjkR0q4z62fTg87aY6O3giO9jcQ70C7rP1uSwwc"
+                    },
+                    success: (data) => {
+                        
+                        for (let i = 0; i < 3; i++) {
+                            var mostChar      = data.userStats[ 0 ].characterStats[ i ].characterCode;
+                            var mostTotalGame = data.userStats[ 0 ].characterStats[ i ].totalGames;
+                            var mostWins      = data.userStats[ 0 ].characterStats[ i ].wins;
+                            var avgWins       = (mostWins / mostTotalGame * 100).toFixed(1);
+                            this.mostCharInfo[ i ] = { "char" : mostChar, "totalGame" : mostTotalGame, "avgWins" : avgWins};
+                        }
+
+
+                        var userId = this.userInfo.ID;
+                        var mmr = data.userStats[0].mmr;
+
+                        $.ajax({
+                            url: `http://localhost:3000/updateMMR`,
+                            dataType: "json",
+                            type: "POST",
+                            data: JSON.stringify({ "userId": userId, "mmr": mmr }),
+                            contentType: "application/json",
+                            success: (data) => {
+                                var session = JSON.parse(sessionStorage.getItem("userInfo") );
+                                session.MMR = data[ 0 ].MMR;
+                                sessionStorage.setItem("userInfo", JSON.stringify(session) );
+                                this.isLoading = false;
+                            }
+                        });
+                    }
+                });
+            },
+            fnCalcMMRTier() {
+                var mmr = this.userInfo.MMR;
+
+                if      (mmr <=  199) this.rankTier = "아이언 4";
+                else if (mmr <=  399) this.rankTier = "아이언 3";
+                else if (mmr <=  599) this.rankTier = "아이언 2";
+                else if (mmr <=  799) this.rankTier = "아이언 1";
+                else if (mmr <=  999) this.rankTier = "브론즈 4";
+                else if (mmr <= 1199) this.rankTier = "브론즈 3";
+                else if (mmr <= 1399) this.rankTier = "브론즈 2";
+                else if (mmr <= 1599) this.rankTier = "브론즈 1";
+                else if (mmr <= 1849) this.rankTier = "실버 4";
+                else if (mmr <= 2099) this.rankTier = "실버 3";
+                else if (mmr <= 2349) this.rankTier = "실버 2";
+                else if (mmr <= 2599) this.rankTier = "실버 1";
+                else if (mmr <= 2899) this.rankTier = "골드 4";
+                else if (mmr <= 3199) this.rankTier = "골드 3";
+                else if (mmr <= 3499) this.rankTier = "골드 2";
+                else if (mmr <= 3799) this.rankTier = "골드 1";
+                else if (mmr <= 4149) this.rankTier = "플래티넘4";
+                else if (mmr <= 4499) this.rankTier = "플래티넘3";
+                else if (mmr <= 4849) this.rankTier = "플래티넘2";
+                else if (mmr <= 5199) this.rankTier = "플래티넘1";
+                else if (mmr <= 5599) this.rankTier = "다이아몬드4";
+                else if (mmr <= 5999) this.rankTier = "다이아몬드3";
+                else if (mmr <= 6399) this.rankTier = "다이아몬드2";
+                else if (mmr <= 6799) this.rankTier = "다이아몬드1";
+                else                  this.rankTier = "미스릴 이상";
+            },
+            fnLoginCheck() {
+                var session = sessionStorage.getItem("userInfo");
+                if (session == null) {
+                    alert("로그인이 필요합니다.");
+                    location.href = "login.html";
+                }
+            },
+            fnLoadSessionInfo() {
+                var session = sessionStorage.getItem("userInfo");
+                this.userInfo = JSON.parse(session);
             },
             sleep(time) {
                 const wakeUpTime = Date.now() + time;
-                while (Date.now() < wakeUpTime) {}
+                while (Date.now() < wakeUpTime) { }
             }
         },
         mounted() {
-            var session = sessionStorage.getItem("userInfo");
-
-            if (session == null) {
-                alert("로그인이 필요합니다.");
-                location.href = "login.html";
-            }
+            this.fnLoginCheck();
+            this.fnLoadSessionInfo();
+            this.fnCalcMMRTier();
+            this.fnUpdateMMR();
         }
     });
     app.mount('#app');

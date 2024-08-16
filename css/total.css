@@ -6,7 +6,43 @@
     box-sizing: border-box;
 }
 
-/* header */
+/* 로딩바 */
+
+#loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#spinner {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-color: black;
+    animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(180deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* 로딩바 끝 */
+
+/* header 시작 */
 
 #header {
     width: 100vw;
@@ -37,9 +73,11 @@
     background-color: #ff8850;
 }
 
-/* container */
+/* header 끝 */
 
-#container {
+/* 로그인 시작 */
+
+#loginContainer {
     width: 500px;
     height: 300px;
     background-color: #ffffff;
@@ -49,7 +87,113 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    box-shadow: 3px 3px 3px #808080;
+    border-radius: 10px;
+    border: 1px solid #ddd;
 }
+
+#loginContainer input {
+    width: 400px;
+    height: 50px;
+    margin: 8px;
+    border-radius: 10px;
+}
+
+#loginContainer .button {
+    width: 400px;
+    height: 50px;
+    margin: 8px;
+    border-radius: 10px;
+    background-color: #ff9191;
+    text-align: center;
+    line-height: 50px;
+}
+
+#loginContainer .button:hover { 
+    color: white;
+    background-color: #ff8850;
+}
+
+/* 로그인 끝 */
+
+/* 회원가입 시작 */
+
+#signUpContainer {
+    width: 500px;
+    height: 500px;
+    background-color: #ffffff;
+    margin: 10vh auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 3px 3px 3px #808080;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+ 
+#signUpContainer .flexLine {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#signUpContainer .idBox {
+    width: 315px;
+    height: 50px;
+    margin: 8px;
+    border-radius: 10px;
+}
+
+#signUpContainer input {
+    width: 400px;
+    height: 50px;
+    margin: 8px;
+    border-radius: 10px;
+}
+
+#signUpContainer .pwdText {
+    font-size: 12px;
+    margin-left: 32px;
+    margin-right: auto;
+}
+
+#signUpContainer .checkBtn {
+    display: inline-block;
+    width: 70px;
+    height: 50px;
+    margin: 8px;
+    border-radius: 10px;
+    background-color: #ff9191;
+    color: white;
+    line-height: 50px;
+    text-align: center;
+}
+
+#signUpContainer .checkBtn:hover {
+    color: white;
+    background-color: #ff8850;
+}
+
+#signUpContainer .button {
+    width: 400px;
+    height: 50px;
+    margin: 8px;
+    border-radius: 10px;
+    background-color: #ff9191;
+    text-align: center;
+    line-height: 50px;
+}
+
+#signUpContainer .button:hover { 
+    color: white;
+    background-color: #ff8850;
+}
+
+/* 회원가입 끝 */
+
+/* 프로필 시작 */
 
 #gridContainer {
     width: 700px;
@@ -64,8 +208,10 @@
         "area1 area2 area2"
         "area3 area4 area5"
     ;
+    box-shadow: 3px 3px 3px #808080;
+    border-radius: 10px;
+    border: 1px solid #ddd;
 }
-
 .area1 {
     grid-area: area1;
     background-color: #aaa;
@@ -75,6 +221,10 @@
     background-color: #bbb;
     padding: 30px;
 }
+.area2 h1 {
+    margin-bottom: 16px;
+}
+
 .area3 {
     grid-area: area3;
     background-color: #ccc;
@@ -112,84 +262,43 @@
     background-color: #ffaaff;
 }
 
-.boxEffect {
-    box-shadow: 3px 3px 3px #808080;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-}
+/* 프로필 끝 */
 
-#container input {
-    width: 400px;
-    height: 50px;
-    margin: 8px;
-    border-radius: 10px;
-}
+/* 캐릭터 시작 */
 
-#container .flexLine {
+#charContainer {
+    width: auto;
+    height: 600px;
+    margin: 10vh auto;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-#container .idBox {
-    width: 315px;
-    height: 50px;
-    margin: 8px;
-    border-radius: 10px;
-}
-
-#container .pwdText {
-    font-size: 12px;
-    margin-left: 32px;
-    margin-right: auto;
-}
-
-#container .checkBtn {
+#menuCustomContainer {
     display: inline-block;
-    width: 70px;
-    height: 50px;
-    margin: 8px;
+    width: 200px;
+    height: 600px;
+    background-color: #ffffff;
+    padding: 16px;
+    box-shadow: 3px 3px 3px #808080;
     border-radius: 10px;
-    background-color: #ff9191;
-    color: white;
-    line-height: 50px;
-    text-align: center;
+    border: 1px solid #ddd;
 }
 
-#container .checkBtn:hover {
-    color: white;
-    background-color: #ff8850;
-}
-
-#container .button {
-    width: 400px;
-    height: 50px;
-    margin: 8px;
-    border-radius: 10px;
-    background-color: #ff9191;
-    text-align: center;
-    line-height: 50px;
-}
-
-#container .button:hover { 
-    color: white;
-    background-color: #ff8850;
-}
-
-#charContainer {
+#statsContainer {
+    display: inline-block;
     width: 1000px;
     height: 600px;
     background-color: #ffffff;
-    margin: 10vh auto;
     padding: 16px;
     overflow-y: scroll;
-    /* display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center; */
+    box-shadow: 3px 3px 3px #808080;
+    border-radius: 10px;
+    border: 1px solid #ddd;
 }
 
-#charContainer h3{
+#statsContainer h3{
     margin-bottom: 16px;
 }
 
@@ -197,13 +306,7 @@
     width: 100%;
     height: auto;
     border-collapse: collapse;
-    /* border: 1px solid black; */
     text-align: center;
-}
-
-#tableStats tr, th, td {
-    /* border: 1px solid black; */
-    /* margin: 8px; */
 }
 
 #tableStats tr{
@@ -225,6 +328,8 @@
     margin: 16px;
     background-color: #ffaaff;
 }
+
+/* 캐릭터 끝 */
 
 /* footer */
 

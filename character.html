@@ -19,32 +19,59 @@
             <div class="button" @click="fnLogout">로그아웃</div>
             <div class="button" @click="fnNavInit">전적 갱신</div>
         </header>
-        <section id="charContainer" class="boxEffect">
-            <h3>캐릭터 통계</h3>
-            <table id="tableStats">
-                <tr>
-                    <th>캐릭터</th>
-                    <th>평균 순위</th>
-                    <th>평균 딜량</th>
-                    <th>평균 탱킹</th>
-                    <th>평균 힐량</th>
-                    <th>평균 RP 획득량</th>
-                </tr>
-                <tr v-for="item of charInfo">
-                    <td class="statsChar">
-                        <div class="statsCharImg">charImg</div>
-                        <div>
-                            <div>{{item.CHARACTER_NUM}}</div>
-                            <div>{{item.MATCHES}}판</div>
-                        </div>
-                    </td>
-                    <td>{{item.GAME_RANK}}</td>
-                    <td>{{item.DAMAGE_TO_PLAYER}}</td>
-                    <td>{{item.DAMAGE_FROM_PLAYER}}</td>
-                    <td>{{item.TEAM_RECOVER}}</td>
-                    <td>{{item.MMR_GAIN}}</td>
-                </tr>
-            </table>
+        <section id="charContainer">
+            <div id="menuCustomContainer">
+                <h3>메뉴 커스텀</h3>
+                <table>
+                    <tr><td><label><input type="checkbox" v-model="menuCheck.isViewRank" @change="fnMenuCheck">평균 순위</label></td></tr>
+                    <tr><td><label><input type="checkbox" v-model="menuCheck.isViewToDamage" @change="fnMenuCheck">평균 딜량</label></td></tr>
+                    <tr><td><label><input type="checkbox" v-model="menuCheck.isViewFromDamage" @change="fnMenuCheck">평균 받은 딜량</label></td></tr>
+                    <tr><td><label><input type="checkbox" v-model="menuCheck.isViewHeal" @change="fnMenuCheck">평균 아군 치유량</label></td></tr>
+                    <tr><td><label><input type="checkbox" v-model="menuCheck.isViewGainRp" @change="fnMenuCheck">평균 RP 획득량</label></td></tr>
+                    <tr><td><label><input type="checkbox" v-model="menuCheck.isViewKills" @change="fnMenuCheck">평균 킬 수</label></td></tr>
+                    <tr><td><label><input type="checkbox" v-model="menuCheck.isViewDeaths" @change="fnMenuCheck">평균 데스 수</label></td></tr>
+                    <tr><td><label><input type="checkbox" v-model="menuCheck.isViewAssistant" @change="fnMenuCheck">평균 어시스트 수</label></td></tr>
+                    <tr><td><label><input type="checkbox" v-model="menuCheck.isViewTeamKill" @change="fnMenuCheck">평균 팀 킬 수</label></td></tr>
+                    <tr><td><label><input type="checkbox" v-model="menuCheck.isViewCcTime" @change="fnMenuCheck">평균 cc 시간</label></td></tr>
+                </table>
+            </div>
+            <div id="statsContainer" class="boxEffect">
+                <h3>캐릭터 통계</h3>
+                <table id="tableStats">
+                    <tr>
+                        <th>캐릭터</th>
+                        <th v-if="menuCheck.isViewRank">평균 순위</th>
+                        <th v-if="menuCheck.isViewToDamage">평균 딜량</th>
+                        <th v-if="menuCheck.isViewFromDamage">평균 탱킹</th>
+                        <th v-if="menuCheck.isViewHeal">평균 힐량</th>
+                        <th v-if="menuCheck.isViewGainRp">평균 RP 획득량</th>
+                        <th v-if="menuCheck.isViewKills">평균 킬 수</th>
+                        <th v-if="menuCheck.isViewDeaths">평균 데스 수</th>
+                        <th v-if="menuCheck.isViewAssistant">평균 어시스트 수</th>
+                        <th v-if="menuCheck.isViewTeamKill">평균 팀 킬 수</th>
+                        <th v-if="menuCheck.isViewCcTime">평균 cc 시간</th>
+                    </tr>
+                    <tr v-for="item of charInfo">
+                        <td class="statsChar">
+                            <div class="statsCharImg">{{item.CHARACTER_NUM}}</div>
+                            <div>
+                                <div>{{item.CHARACTER_NUM}}</div>
+                                <div>{{item.MATCHES}}판</div>
+                            </div>
+                        </td>
+                        <td v-if="menuCheck.isViewRank">{{item.GAME_RANK}}</td>
+                        <td v-if="menuCheck.isViewToDamage">{{item.DAMAGE_TO_PLAYER}}</td>
+                        <td v-if="menuCheck.isViewFromDamage">{{item.DAMAGE_FROM_PLAYER}}</td>
+                        <td v-if="menuCheck.isViewHeal">{{item.TEAM_RECOVER}}</td>
+                        <td v-if="menuCheck.isViewGainRp">{{item.MMR_GAIN}}</td>
+                        <td v-if="menuCheck.isViewKills">{{item.PLAYER_KILL}}</td>
+                        <td v-if="menuCheck.isViewDeaths">{{item.PLAYER_DEATHS}}</td>
+                        <td v-if="menuCheck.isViewAssistant">{{item.PLAYER_ASSISTANT}}</td>
+                        <td v-if="menuCheck.isViewTeamKill">{{item.TEAM_KILL}}</td>
+                        <td v-if="menuCheck.isViewCcTime">{{item.CC_TIME_TO_PLAYER}}</td>
+                    </tr>
+                </table>
+            </div>
         </section>
         <footer id="footer">
             <div>footer</div>
@@ -55,7 +82,20 @@
     const app = Vue.createApp({
         data() {
             return {
-                charInfo : []
+                userInfo : {},
+                charInfo : [],
+                menuCheck : {
+                    isViewRank : false,
+                    isViewToDamage : false,
+                    isViewFromDamage : false,
+                    isViewHeal : false,
+                    isViewGainRp : false,
+                    isViewKills : false,
+                    isViewDeaths : false,
+                    isViewAssistant : false,
+                    isViewTeamKill : false,
+                    isViewCcTime : false
+                }
             };
         },
         methods: {
@@ -72,6 +112,10 @@
             fnNavInit() {
                 alert("새로고침 버튼");
             },
+            fnLoadSessionInfo() {
+                var session = sessionStorage.getItem("userInfo");
+                this.userInfo = JSON.parse(session);
+            },
             fnLoginCheck() {
                 var session = sessionStorage.getItem("userInfo");
                 if (session == null) {
@@ -80,24 +124,72 @@
                 }
             },
             fnDataInit() {
-                var userId = JSON.parse(sessionStorage.getItem("userInfo") ).USERNUM;
+                var userNum = this.userInfo.USERNUM;
                 
                 $.ajax({
                    url: `http://localhost:3000/charInit`,
                    dataType: "json",
                    type: "POST",
-                   data: JSON.stringify({"userId" : userId}),
+                   data: JSON.stringify({"userNum" : userNum}),
                    contentType: "application/json",
                    success: (data) => {
                         this.charInfo = data;
-                        console.log(this.charInfo);
+                   }
+                });
+            },
+            fnMenuCheck() {
+                var userId = this.userInfo.ID;
+
+                $.ajax({
+                   url: `http://localhost:3000/menuCheck`,
+                   dataType: "json",
+                   type: "POST",
+                   data: JSON.stringify({"userId" : userId, "menuCheck" : this.menuCheck}),
+                   contentType: "application/json",
+                   success: (data) => {
+                        console.log(data);
+                   }
+                });
+            },
+            fnGetMenuCheck() {
+                var userId = this.userInfo.ID;
+
+                $.ajax({
+                   url: `http://localhost:3000/getMenuCheck`,
+                   dataType: "json",
+                   type: "POST",
+                   data: JSON.stringify({"userId" : userId}),
+                   contentType: "application/json",
+                   success: (data) => {
+                        // 저장된 데이터가 없을 때는 기본값
+                        if (data.length == 0) {
+                            this.menuCheck.isViewRank     = true;
+                            this.menuCheck.isViewGainRp   = true;
+                            this.menuCheck.isViewToDamage = true;
+                            this.menuCheck.isViewTeamKill = true;
+                            this.menuCheck.isViewKills    = true;
+                            return;
+                        }
+                        // 있다면 db에서 저장된 설정 불러오기
+                        this.menuCheck.isViewRank       = data[ 0 ].RANK        == "true" ? true : false;
+                        this.menuCheck.isViewToDamage   = data[ 0 ].TO_DAMAGE   == "true" ? true : false;
+                        this.menuCheck.isViewFromDamage = data[ 0 ].FROM_DAMAGE == "true" ? true : false;
+                        this.menuCheck.isViewHeal       = data[ 0 ].HEAL        == "true" ? true : false;
+                        this.menuCheck.isViewGainRp     = data[ 0 ].GAIN_RP     == "true" ? true : false;
+                        this.menuCheck.isViewKills      = data[ 0 ].KILLS       == "true" ? true : false;
+                        this.menuCheck.isViewDeaths     = data[ 0 ].DEATHS      == "true" ? true : false;
+                        this.menuCheck.isViewAssistant  = data[ 0 ].ASSISTANT   == "true" ? true : false;
+                        this.menuCheck.isViewTeamKill   = data[ 0 ].TEAM_KILL   == "true" ? true : false;
+                        this.menuCheck.isViewCcTime     = data[ 0 ].CC_TIME     == "true" ? true : false;
                    }
                 });
             }
         },
         mounted() {
+            this.fnLoadSessionInfo();
             this.fnLoginCheck();
             this.fnDataInit();
+            this.fnGetMenuCheck();
         }
     });
     app.mount('#app');
