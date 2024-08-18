@@ -41,7 +41,9 @@ app.get('/', (req, res) => {
 app.post('/login', async (req, res) => {
     const { userId, pwd } = req.body;
 
-    var query = `SELECT * FROM USERS WHERE ID = '${userId}' AND PWD = '${pwd}'`;
+    var query = `SELECT ID, NICKNAME, TO_CHAR(UPDATETIME, 'YYMMDD HH:MI:SS') AS UPDATETIME, USERNUM, MMR
+                FROM USERS 
+                WHERE ID = '${userId}' AND PWD = '${pwd}'`;
 
     try {
         var result = await connection.execute(query);
@@ -170,7 +172,7 @@ app.post('/updateTime', async (req, res) => {
                                   WHERE ID = '${userId}'`
                                 , [], { autoCommit: true });
 
-        var result = await connection.execute(`SELECT UPDATETIME
+        var result = await connection.execute(`SELECT TO_CHAR(UPDATETIME, 'YYMMDD HH:MI:SS') AS UPDATETIME
                                                 FROM USERS
                                                 WHERE ID = '${userId}'`);
         

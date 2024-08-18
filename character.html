@@ -12,12 +12,29 @@
 
 <body>
     <div id="app">
+        <div v-if="isLoading" id="loading">
+            <div id="spinner"></div>
+        </div>
         <header id="header">
-            <div class="Logo">Logo</div>
-            <div class="menuItem" @click="fnNavProfile">프로필</div>
-            <div class="menuItem" @click="fnNavChar">캐릭터 통계</div>
-            <div class="button" @click="fnLogout">로그아웃</div>
-            <div class="button" @click="fnNavInit">전적 갱신</div>
+            <div class="centerFlex">
+                <div class="logo"></div>
+                <div class="logoText">
+                    <h3 class="menuText">Return GG</h3>
+                    <p class="menuText menuSmallText">이터널 리턴 전적 분석 사이트</p>
+                </div>
+                <a href="profile.html" class="menuItem">프로필</a>
+                <a href="character.html" class="menuItem">캐릭터 통계</a>
+                
+                <button class="basicBtn initBtn" @click="fnNavInit">전적 갱신</button>
+                <div class="menuItem">
+                    <div>지난 갱신일</div>
+                    <div>{{userInfo.updateTime}}</div>
+                </div>
+            </div>
+            <div class="centerFlex">
+                <div class="menuText">{{userInfo.nickname}}님 환영합니다!</div>
+                <button class="basicBtn logoutBtn" @click="fnLogout">로그아웃</button>
+            </div>
         </header>
         <section id="charContainer">
             <div id="menuCustomContainer">
@@ -74,7 +91,11 @@
             </div>
         </section>
         <footer id="footer">
-            <div>footer</div>
+            <div class="flexHorizontal">
+                <div class="smallLogo"></div>
+                <div class="footerText">Return GG</div>
+            </div>
+            <p>© Return.GG. Eternal Return and all related logos are trademarks of Nimble Neuron, inc. or its affiliates.</p>
         </footer>
     </div>
 </body>
@@ -82,7 +103,13 @@
     const app = Vue.createApp({
         data() {
             return {
-                userInfo : {},
+                userInfo: {
+                    userId : "",
+                    nickname : "",
+                    updateTime : "",
+                    userNum : "",
+                    mmr : ""
+                },
                 charInfo : [],
                 menuCheck : {
                     isViewRank : false,
@@ -95,7 +122,10 @@
                     isViewAssistant : false,
                     isViewTeamKill : false,
                     isViewCcTime : false
-                }
+                },
+                mostCharInfo: [{}, {}, {}],
+                isLoading: false,
+                isNext : true
             };
         },
         methods: {
@@ -106,25 +136,142 @@
                 location.href = "character.html";
             },
             fnLogout() {
-                sessionStorage.removeItem("userInfo");
+                sessionStorage.clear();
                 location.href = "login.html";
             },
             fnNavInit() {
-                alert("새로고침 버튼");
+                this.isLoading = true;
+                this.fnSetUpdateTime();
+                this.fnUpdateMMR();
+                this.fnApiRequest("");
+            },
+            fnSetUpdateTime() {
+                $.ajax({
+                    url: `http://localhost:3000/updateTime`,
+                    dataType: "json",
+                    type: "POST",
+                    data: JSON.stringify({ "userId": this.userInfo.userId }),
+                    contentType: "application/json",
+                    success: (data) => {
+                        this.userInfo.updateTime = data[ 0 ].UPDATETIME;
+                        sessionStorage.setItem("updateTime", data[ 0 ].UPDATETIME);
+                    }
+                });
+            },
+            fnUpdateMMR() {
+                var userNum = this.userInfo.userNum;
+
+                $.ajax({
+                    url: `https://open-api.bser.io/v1/user/stats/${userNum}/25`,
+                    dataType: "json",
+                    type: "GET",
+                    contentType: "application/json",
+                    headers: {
+                        "accept": "application/json",
+                        "x-api-key": "2hjkR0q4z62fTg87aY6O3giO9jcQ70C7rP1uSwwc"
+                    },
+                    success: (data) => {
+                        
+                        for (let i = 0; i < 3; i++) {
+                            var mostChar      = data.userStats[ 0 ].characterStats[ i ].characterCode;
+                            var mostTotalGame = data.userStats[ 0 ].characterStats[ i ].totalGames;
+                            var mostWins      = data.userStats[ 0 ].characterStats[ i ].wins;
+                            var avgWins       = (mostWins / mostTotalGame * 100).toFixed(1);
+                            this.mostCharInfo[ i ] = { "char" : mostChar, "totalGame" : mostTotalGame, "avgWins" : avgWins};
+                        }
+
+                        var userId = this.userInfo.userId;
+                        var mmr = data.userStats[0].mmr;
+
+                        $.ajax({
+                            url: `http://localhost:3000/updateMMR`,
+                            dataType: "json",
+                            type: "POST",
+                            data: JSON.stringify({ "userId": userId, "mmr": mmr }),
+                            contentType: "application/json",
+                            success: (data) => {
+                                this.userInfo.mmr = data[ 0 ].MMR;
+                                sessionStorage.setItem("mmr", data[ 0 ].MMR);
+                            }
+                        });
+                    }
+                });
+            },
+            // 한번에 다 주는 방식이 아니고, 10경기씩 페이지로 나누어 제공한다.
+            // 그래서 next로 다음 페이지 요청을 보내야한다..
+            // 이를 재귀 함수로 구현함.
+            fnApiRequest(next) {
+                // 1초에 1 request 제한이 걸려있음.
+                this.sleep(1000);
+
+                var userNum = this.userInfo.userNum;
+
+                var urlStr = "";
+                if (next == "") {
+                    urlStr = `https://open-api.bser.io/v1/user/games/${userNum}`;
+                } else {
+                    urlStr = `https://open-api.bser.io/v1/user/games/${userNum}?next=${next}`;
+                }
+
+                $.ajax({
+                    url: urlStr,
+                    dataType: "json",
+                    type: "GET",
+                    contentType: "application/json",
+                    headers: {
+                        "accept": "application/json",
+                        "x-api-key": "2hjkR0q4z62fTg87aY6O3giO9jcQ70C7rP1uSwwc"
+                    },
+                    success: (data) => {
+                        // 재귀 종료 조건
+                        if (data.next == undefined || !this.isNext) {
+                            this.isLoading = false;
+                            return;
+                        }
+
+                        // 현재 시즌만 다룸
+                        var games = [];
+                        for (var game of data.userGames) {
+                            if (game.seasonId == 25)
+                                games.push(game);
+                        }
+
+                        // 10게임씩 db에 저장
+                        $.ajax({
+                            url: `http://localhost:3000/init`,
+                            dataType: "json",
+                            type: "POST",
+                            data: JSON.stringify({ "userGames": games }),
+                            contentType: "application/json",
+                            success: (data) => {
+                                // db에서 중첩된 레코드를 발견하면 api질의를 중단해야 함.
+                                if (!data[ 0 ].next) {
+                                    this.isNext = false;
+                                }
+                            }
+                        });
+
+                        // 재귀 호출
+                        this.fnApiRequest(data.next);
+                    }
+                });
             },
             fnLoadSessionInfo() {
-                var session = sessionStorage.getItem("userInfo");
-                this.userInfo = JSON.parse(session);
+                this.userInfo.userId     = sessionStorage.getItem("userId");
+                this.userInfo.nickname   = sessionStorage.getItem("nickname");
+                this.userInfo.userNum    = sessionStorage.getItem("userNum");
+                this.userInfo.updateTime = sessionStorage.getItem("updateTime");
+                this.userInfo.mmr        = sessionStorage.getItem("mmr");
             },
             fnLoginCheck() {
-                var session = sessionStorage.getItem("userInfo");
-                if (session == null) {
+                var userId = sessionStorage.getItem("userId");
+                if (userId == null) {
                     alert("로그인이 필요합니다.");
                     location.href = "login.html";
                 }
             },
             fnDataInit() {
-                var userNum = this.userInfo.USERNUM;
+                var userNum = this.userInfo.userNum;
                 
                 $.ajax({
                    url: `http://localhost:3000/charInit`,
@@ -138,7 +285,7 @@
                 });
             },
             fnMenuCheck() {
-                var userId = this.userInfo.ID;
+                var userId = this.userInfo.userId;
 
                 $.ajax({
                    url: `http://localhost:3000/menuCheck`,
@@ -152,7 +299,7 @@
                 });
             },
             fnGetMenuCheck() {
-                var userId = this.userInfo.ID;
+                var userId = this.userInfo.userId;
 
                 $.ajax({
                    url: `http://localhost:3000/getMenuCheck`,
@@ -183,11 +330,16 @@
                         this.menuCheck.isViewCcTime     = data[ 0 ].CC_TIME     == "true" ? true : false;
                    }
                 });
-            }
+            },
+            sleep(time) {
+                const wakeUpTime = Date.now() + time;
+                while (Date.now() < wakeUpTime) { }
+            },
         },
+        
         mounted() {
-            this.fnLoadSessionInfo();
             this.fnLoginCheck();
+            this.fnLoadSessionInfo();
             this.fnDataInit();
             this.fnGetMenuCheck();
         }

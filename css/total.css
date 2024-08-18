@@ -46,23 +46,72 @@
 
 #header {
     width: 100vw;
-    height: 100px;
-    background-color: #eee;
+    height: 10vh;
+    background-color: #212227;
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
 }
 
-#header .Logo {
+#header .centerFlex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#header .logo {
     display: inline-block;
     width: 50px;
     height: 50px;
-    background-color: #ddd;
+    margin: 16px;
+    background-image: url("../images/logo.png");
+    background-size: cover;
+}
+
+#header .logoText {
     margin: 16px;
 }
 
 #header .menuItem {
     margin: 16px;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+#header .menuText {
+    color: white;
+}
+
+#header .menuSmallText {
+    font-size: 10px;
+}
+
+#header .basicBtn {
+    margin: 16px;
+    display: inline-block;
+    width: 100px;
+    height: 50px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+    color: white;
+}
+
+#header .logoutBtn {
+    background-color: #ff8850;
+}
+#header .logoutBtn:hover {
+    background-color: #db6c38;
+}
+
+#header .initBtn {
+    background-color: #ff8850;
+}
+#header .initBtn:hover {
+    background-color: #db6c38;
 }
 
 #header .button {
@@ -99,19 +148,31 @@
     border-radius: 10px;
 }
 
-#loginContainer .button {
+#loginContainer .longButton {
     width: 400px;
     height: 50px;
     margin: 8px;
     border-radius: 10px;
-    background-color: #ff9191;
     text-align: center;
     line-height: 50px;
+    color: white;
+    font-weight: bold;
 }
 
-#loginContainer .button:hover { 
-    color: white;
+#loginContainer .loginButton {
     background-color: #ff8850;
+}
+
+#loginContainer .loginButton:hover {
+    background-color: #d6632e;
+}
+
+#loginContainer .signUpButton {
+    background-color: #ff8888;
+}
+
+#loginContainer .signUpButton:hover {
+    background-color: rgb(219, 71, 71);
 }
 
 /* 로그인 끝 */
@@ -132,7 +193,7 @@
     border-radius: 10px;
     border: 1px solid #ddd;
 }
- 
+
 #signUpContainer .flexLine {
     display: flex;
     justify-content: center;
@@ -157,6 +218,7 @@
     font-size: 12px;
     margin-left: 32px;
     margin-right: auto;
+    color: red;
 }
 
 #signUpContainer .checkBtn {
@@ -165,41 +227,59 @@
     height: 50px;
     margin: 8px;
     border-radius: 10px;
-    background-color: #ff9191;
+    background-color: #ff8850;
     color: white;
     line-height: 50px;
     text-align: center;
+    font-weight: bold;
 }
 
 #signUpContainer .checkBtn:hover {
     color: white;
-    background-color: #ff8850;
+    background-color: #d6632e;
 }
 
-#signUpContainer .button {
+#signUpContainer .signUpButton {
     width: 400px;
     height: 50px;
     margin: 8px;
     border-radius: 10px;
-    background-color: #ff9191;
+    background-color: #ff8888;
     text-align: center;
     line-height: 50px;
+    font-weight: bold;
+    color: white;
 }
 
-#signUpContainer .button:hover { 
+#signUpContainer .signUpButton:hover { 
     color: white;
-    background-color: #ff8850;
+    background-color: rgb(219, 71, 71);
 }
 
 /* 회원가입 끝 */
 
 /* 프로필 시작 */
 
+#app {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#mainContent {
+    width: 100vw;
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 #gridContainer {
     width: 700px;
     height: 550px;
-    background-color: #ffffff;
-    margin: 10vh auto;
     padding: 16px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -208,58 +288,94 @@
         "area1 area2 area2"
         "area3 area4 area5"
     ;
-    box-shadow: 3px 3px 3px #808080;
     border-radius: 10px;
-    border: 1px solid #ddd;
+    box-shadow: 3px 3px 3px #808080;
+    border: 1px solid black;
 }
 .area1 {
     grid-area: area1;
-    background-color: #aaa;
+    width: auto;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .area2 {
     grid-area: area2;
-    background-color: #bbb;
     padding: 30px;
 }
 .area2 h1 {
     margin-bottom: 16px;
 }
+.area2 * {
+    color: rgb(226, 226, 226);
+}
 
 .area3 {
     grid-area: area3;
-    background-color: #ccc;
 }
 .area4 {
     grid-area: area4;
-    background-color: #ddd;
 }
 .area5 {
     grid-area: area5;
-    background-color: #eee;
 }
 
-.flexArea {
+.flexColumnArea {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
+.flexRowsArea {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+}
+
+.flexRowsArea div {
+    margin: 8px;
+}
+
 #gridContainer .rankImg {
-    display: inline-block;
-    width: 80%;
-    height: 80%;
-    margin: 10%;
-    background-color: #ffaaff;
+    width: 150px;
+    height: 250px;
+    background-size: cover;
+    margin: 16px;
+}
+
+#gridContainer .ironImg {
+    background-image: url(../images/Transparent_Iron.webp);
+}
+#gridContainer .bronzeImg {
+    background-image: url(../images/Transparent_Bronze.webp);
+}
+#gridContainer .silverImg {
+    background-image: url(../images/Transparent_Silver.webp);
+}
+#gridContainer .goldImg {
+    background-image: url(../images/Transparent_Gold.webp);
+}
+#gridContainer .platinumImg {
+    background-image: url(../images/Transparent_Platinum.webp);
+}
+#gridContainer .diamondImg {
+    background-image: url(../images/Transparent_Diamond.webp);
+}
+#gridContainer .mithrilImg {
+    background-image: url(../images/Transparent_Mithril.webp);
 }
 
 #gridContainer .charImg {
     display: inline-block;
     width: 80%;
     height: 80%;
-    margin: 10%;
-    margin-bottom: 0px;
-    background-color: #ffaaff;
+    margin: 16px;
+    border-radius: 10px;
+    background-size: cover;
 }
 
 /* 프로필 끝 */
@@ -335,9 +451,32 @@
 
 #footer {
     width: 100vw;
-    height: 100px;
-    background-color: #aaa;
-    position: absolute;
-    bottom: 0px;
-    left: 0px;
+    height: 10vh;
+    background-color: #43454e;
+}
+
+#footer .flexHorizontal {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+#footer .smallLogo{
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    margin: 16px;
+    background-image: url("../images/logo.png");
+    background-size: cover;
+}
+
+#footer .footerText {
+    display: inline-block;
+    color: white;
+}
+
+#footer p {
+    color: white;
+    font-size: 10px;
+    margin-left: 16px;
 }

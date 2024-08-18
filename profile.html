@@ -16,52 +16,72 @@
             <div id="spinner"></div>
         </div>
         <header id="header">
-            <div class="Logo">Logo</div>
-            <div class="menuItem" @click="fnNavProfile">프로필</div>
-            <div class="menuItem" @click="fnNavChar">캐릭터 통계</div>
-            <div class="button" @click="fnLogout">로그아웃</div>
-            <div class="button" @click="fnNavInit">전적 갱신</div>
+            <div class="centerFlex">
+                <div class="logo"></div>
+                <div class="logoText">
+                    <h3 class="menuText">Return GG</h3>
+                    <p class="menuText menuSmallText">이터널 리턴 전적 분석 사이트</p>
+                </div>
+                <a href="profile.html" class="menuItem">프로필</a>
+                <a href="character.html" class="menuItem">캐릭터 통계</a>
+                
+                <button class="basicBtn initBtn" @click="fnNavInit">전적 갱신</button>
+                <div class="menuItem">
+                    <div>지난 갱신일</div>
+                    <div>{{userInfo.updateTime}}</div>
+                </div>
+            </div>
+            <div class="centerFlex">
+                <div class="menuText">{{userInfo.nickname}}님 환영합니다!</div>
+                <button class="basicBtn logoutBtn" @click="fnLogout">로그아웃</button>
+            </div>
         </header>
-        <section id="gridContainer">
-            <div class="area1">
-                <div class="rankImg"      v-if="userInfo.MMR <= 799" >아이언</div>
-                <div class="rankImg" v-else-if="userInfo.MMR <= 1599">브론즈</div>
-                <div class="rankImg" v-else-if="userInfo.MMR <= 2599">실버</div>
-                <div class="rankImg" v-else-if="userInfo.MMR <= 3799">골드</div>
-                <div class="rankImg" v-else-if="userInfo.MMR <= 5199">플래티넘</div>
-                <div class="rankImg" v-else-if="userInfo.MMR <= 6799">다이아몬드</div>
-                <div class="rankImg" v-else>미스릴 이상</div>
-            </div>
-            <div class="area2">
-                <h1>{{userInfo.NICKNAME}}</h1>
-                <h6>정규시즌 4</h6>
-                <div>{{rankTier}}</div>
-                <h2>{{userInfo.MMR}} RP</h2>
-            </div>
-            <div class="area3 flexArea">
-                <div class="charImg">{{mostCharInfo[ 0 ].char}}</div>
-                <div>
-                    <div>승률 {{mostCharInfo[ 0 ].avgWins}}</div>
-                    <div>판수 {{mostCharInfo[ 0 ].totalGame}}</div>
+        <section id="mainContent">
+            <div id="gridContainer" ref="tierBack">
+                <div class="area1">
+                    <div class="rankImg ironImg"     v-if     ="userInfo.mmr <=  799"></div>
+                    <div class="rankImg bronzeImg"   v-else-if="userInfo.mmr <= 1599"></div>
+                    <div class="rankImg silverImg"   v-else-if="userInfo.mmr <= 2599"></div>
+                    <div class="rankImg goldImg"     v-else-if="userInfo.mmr <= 3799"></div>
+                    <div class="rankImg platinumImg" v-else-if="userInfo.mmr <= 5199"></div>
+                    <div class="rankImg diamondImg"  v-else-if="userInfo.mmr <= 6799"></div>
+                    <div class="rankImg mithrilImg"  v-else></div>
                 </div>
-            </div>
-            <div class="area4 flexArea">
-                <div class="charImg">{{mostCharInfo[ 1 ].char}}</div>
-                <div>
-                    <div>승률 {{mostCharInfo[ 1 ].avgWins}}</div>
-                    <div>판수 {{mostCharInfo[ 1 ].totalGame}}</div>
+                <div class="area2">
+                    <h1>{{userInfo.nickname}}</h1>
+                    <h6>정규시즌 4</h6>
+                    <div>{{rankTier}}</div>
+                    <h2>{{userInfo.mmr}} RP</h2>
                 </div>
-            </div>
-            <div class="area5 flexArea">
-                <div class="charImg">{{mostCharInfo[ 2 ].char}}</div>
-                <div>
-                    <div>승률 {{mostCharInfo[ 2 ].avgWins}}</div>
-                    <div>판수 {{mostCharInfo[ 2 ].totalGame}}</div>
+                <div class="area3 flexColumnArea">
+                    <div class="charImg" ref="most1">{{mostCharInfo[ 0 ].char}}</div>
+                    <div class="flexRowsArea">
+                        <div>승률 {{mostCharInfo[ 0 ].avgWins}}</div>
+                        <div>({{mostCharInfo[ 0 ].totalGame}}게임)</div>
+                    </div>
+                </div>
+                <div class="area4 flexColumnArea">
+                    <div class="charImg" ref="most2">{{mostCharInfo[ 1 ].char}}</div>
+                    <div class="flexRowsArea">
+                        <div>승률 {{mostCharInfo[ 1 ].avgWins}}</div>
+                        <div>({{mostCharInfo[ 1 ].totalGame}}게임)</div>
+                    </div>
+                </div>
+                <div class="area5 flexColumnArea">
+                    <div class="charImg" ref="most3">{{mostCharInfo[ 2 ].char}}</div>
+                    <div class="flexRowsArea">
+                        <div>승률 {{mostCharInfo[ 2 ].avgWins}}</div>
+                        <div>({{mostCharInfo[ 2 ].totalGame}}게임)</div>
+                    </div>
                 </div>
             </div>
         </section>
         <footer id="footer">
-            <div>footer</div>
+            <div class="flexHorizontal">
+                <div class="smallLogo"></div>
+                <div class="footerText">Return GG</div>
+            </div>
+            <p>© Return.GG. Eternal Return and all related logos are trademarks of Nimble Neuron, inc. or its affiliates.</p>
         </footer>
     </div>
 </body>
@@ -69,7 +89,13 @@
     const app = Vue.createApp({
         data() {
             return {
-                userInfo: {},
+                userInfo: {
+                    userId : "",
+                    nickname : "",
+                    updateTime : "",
+                    userNum : "",
+                    mmr : ""
+                },
                 isLoading: false,
                 rankTier: "",
                 mostCharInfo: [{}, {}, {}],
@@ -77,19 +103,14 @@
             };
         },
         methods: {
-            fnNavProfile() {
-                location.href = "profile.html";
-            },
-            fnNavChar() {
-                location.href = "character.html";
-            },
             fnLogout() {
-                sessionStorage.removeItem("userInfo");
+                sessionStorage.clear();
                 location.href = "login.html";
             },
             fnNavInit() {
                 this.isLoading = true;
                 this.fnSetUpdateTime();
+                this.fnUpdateMMR();
                 this.fnApiRequest("");
             },
             fnSetUpdateTime() {
@@ -97,14 +118,52 @@
                     url: `http://localhost:3000/updateTime`,
                     dataType: "json",
                     type: "POST",
-                    data: JSON.stringify({ "userId": this.userInfo.ID }),
+                    data: JSON.stringify({ "userId": this.userInfo.userId }),
                     contentType: "application/json",
                     success: (data) => {
-                        var info = sessionStorage.getItem("userInfo");
-                        var jsonInfo = JSON.parse(info);
+                        this.userInfo.updateTime = data[ 0 ].UPDATETIME;
+                        sessionStorage.setItem("updateTime", data[ 0 ].UPDATETIME);
+                    }
+                });
+            },
+            fnUpdateMMR() {
+                var userNum = this.userInfo.userNum;
 
-                        jsonInfo.UPDATETIME = data[0].UPDATETIME;
-                        sessionStorage.setItem("userInfo", JSON.stringify(jsonInfo));
+                $.ajax({
+                    url: `https://open-api.bser.io/v1/user/stats/${userNum}/25`,
+                    dataType: "json",
+                    type: "GET",
+                    contentType: "application/json",
+                    headers: {
+                        "accept": "application/json",
+                        "x-api-key": "2hjkR0q4z62fTg87aY6O3giO9jcQ70C7rP1uSwwc"
+                    },
+                    success: (data) => {
+                        
+                        for (let i = 0; i < 3; i++) {
+                            var mostChar      = data.userStats[ 0 ].characterStats[ i ].characterCode;
+                            var mostTotalGame = data.userStats[ 0 ].characterStats[ i ].totalGames;
+                            var mostWins      = data.userStats[ 0 ].characterStats[ i ].wins;
+                            var avgWins       = (mostWins / mostTotalGame * 100).toFixed(1);
+                            this.mostCharInfo[ i ] = { "char" : mostChar, "totalGame" : mostTotalGame, "avgWins" : avgWins};
+                        }
+
+                        var userId = this.userInfo.userId;
+                        var mmr = data.userStats[0].mmr;
+
+                        $.ajax({
+                            url: `http://localhost:3000/updateMMR`,
+                            dataType: "json",
+                            type: "POST",
+                            data: JSON.stringify({ "userId": userId, "mmr": mmr }),
+                            contentType: "application/json",
+                            success: (data) => {
+                                this.userInfo.mmr = data[ 0 ].MMR;
+                                sessionStorage.setItem("mmr", data[ 0 ].MMR);
+                            }
+                        });
+
+                        this.fnSetMostCharImg();
                     }
                 });
             },
@@ -112,11 +171,10 @@
             // 그래서 next로 다음 페이지 요청을 보내야한다..
             // 이를 재귀 함수로 구현함.
             fnApiRequest(next) {
-
                 // 1초에 1 request 제한이 걸려있음.
                 this.sleep(1000);
 
-                var userNum = this.userInfo.USERNUM;
+                var userNum = this.userInfo.userNum;
 
                 var urlStr = "";
                 if (next == "") {
@@ -137,8 +195,7 @@
                     success: (data) => {
                         // 재귀 종료 조건
                         if (data.next == undefined || !this.isNext) {
-                            // request가 겹치지 않게 마지막에 실행
-                            this.fnUpdateMMR();
+                            this.isLoading = false;
                             return;
                         }
 
@@ -169,51 +226,8 @@
                     }
                 });
             },
-            fnUpdateMMR() {
-
-                var userNum = this.userInfo.USERNUM;
-
-                $.ajax({
-                    url: `https://open-api.bser.io/v1/user/stats/${userNum}/25`,
-                    dataType: "json",
-                    type: "GET",
-                    contentType: "application/json",
-                    headers: {
-                        "accept": "application/json",
-                        "x-api-key": "2hjkR0q4z62fTg87aY6O3giO9jcQ70C7rP1uSwwc"
-                    },
-                    success: (data) => {
-                        
-                        for (let i = 0; i < 3; i++) {
-                            var mostChar      = data.userStats[ 0 ].characterStats[ i ].characterCode;
-                            var mostTotalGame = data.userStats[ 0 ].characterStats[ i ].totalGames;
-                            var mostWins      = data.userStats[ 0 ].characterStats[ i ].wins;
-                            var avgWins       = (mostWins / mostTotalGame * 100).toFixed(1);
-                            this.mostCharInfo[ i ] = { "char" : mostChar, "totalGame" : mostTotalGame, "avgWins" : avgWins};
-                        }
-
-
-                        var userId = this.userInfo.ID;
-                        var mmr = data.userStats[0].mmr;
-
-                        $.ajax({
-                            url: `http://localhost:3000/updateMMR`,
-                            dataType: "json",
-                            type: "POST",
-                            data: JSON.stringify({ "userId": userId, "mmr": mmr }),
-                            contentType: "application/json",
-                            success: (data) => {
-                                var session = JSON.parse(sessionStorage.getItem("userInfo") );
-                                session.MMR = data[ 0 ].MMR;
-                                sessionStorage.setItem("userInfo", JSON.stringify(session) );
-                                this.isLoading = false;
-                            }
-                        });
-                    }
-                });
-            },
             fnCalcMMRTier() {
-                var mmr = this.userInfo.MMR;
+                var mmr = this.userInfo.mmr;
 
                 if      (mmr <=  199) this.rankTier = "아이언 4";
                 else if (mmr <=  399) this.rankTier = "아이언 3";
@@ -242,26 +256,54 @@
                 else                  this.rankTier = "미스릴 이상";
             },
             fnLoginCheck() {
-                var session = sessionStorage.getItem("userInfo");
-                if (session == null) {
+                var userId = sessionStorage.getItem("userId");
+                if (userId == null) {
                     alert("로그인이 필요합니다.");
                     location.href = "login.html";
                 }
             },
             fnLoadSessionInfo() {
-                var session = sessionStorage.getItem("userInfo");
-                this.userInfo = JSON.parse(session);
+                this.userInfo.userId     = sessionStorage.getItem("userId");
+                this.userInfo.nickname   = sessionStorage.getItem("nickname");
+                this.userInfo.updateTime = sessionStorage.getItem("updateTime");
+                this.userInfo.userNum    = sessionStorage.getItem("userNum");
+                this.userInfo.mmr        = sessionStorage.getItem("mmr");
+            },
+            fnSetTierBackground() {
+                var mmr = this.userInfo.mmr;
+
+                var color = "";
+                if      (mmr <=  799) color = "#A8AAB9"; // 아이언
+                else if (mmr <= 1599) color = "#AB5721"; // 브론즈
+                else if (mmr <= 2599) color = "#C4CBE6"; // 실버
+                else if (mmr <= 3799) color = "#DFB664"; // 골드
+                else if (mmr <= 5199) color = "#7FE3AD"; // 플래티넘
+                else if (mmr <= 6799) color = "#F0D9EC"; // 다이아몬드
+                else                  color = "#4B999F"; // 미스릴 이상
+
+                this.$refs.tierBack.style.background = `radial-gradient(circle at 20% 20%, ${color}, #191719)`;
+
+            },
+            fnSetMostCharImg() {
+                var most1Char = this.mostCharInfo[ 0 ].char;
+                var most2Char = this.mostCharInfo[ 1 ].char;
+                var most3Char = this.mostCharInfo[ 2 ].char;
+                
+                this.$refs.most1.style.backgroundImage = `url(images/${most1Char}.png)`;
+                this.$refs.most2.style.backgroundImage = `url(images/${most2Char}.png)`;
+                this.$refs.most3.style.backgroundImage = `url(images/${most3Char}.png)`;
             },
             sleep(time) {
                 const wakeUpTime = Date.now() + time;
                 while (Date.now() < wakeUpTime) { }
-            }
+            },
         },
         mounted() {
             this.fnLoginCheck();
             this.fnLoadSessionInfo();
             this.fnCalcMMRTier();
             this.fnUpdateMMR();
+            this.fnSetTierBackground();
         }
     });
     app.mount('#app');

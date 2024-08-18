@@ -13,7 +13,14 @@
 <body>
     <div id="app">
         <header id="header">
-            <div>header</div>
+            <div class="centerFlex">
+                <div class="logo"></div>
+                <div class="logoText">
+                    <h3 class="menuText">Return GG</h3>
+                    <p class="menuText menuSmallText">이터널 리턴 전적 분석 사이트</p>
+                </div>
+            </div> 
+            <div class="alignTmpTag"></div>
         </header>
         <section id="signUpContainer">
             <div class="flexLine">
@@ -29,10 +36,14 @@
                 <input v-else disabled class="idBox" type="text" placeholder="유저 닉네임" v-model="info.nickname" @focus="fnSetBoxLine('red')" @blur="fnSetBoxLine('black')">
                 <div class="checkBtn" @click="fnNicknameCheck">유저확인</div>
             </div>
-            <div class="button" @click="fnSignUp">가입하기</div>
+            <div class="signUpButton" @click="fnSignUp">가입하기</div>
         </section>
         <footer id="footer">
-            <div>footer</div>
+            <div class="flexHorizontal">
+                <div class="smallLogo"></div>
+                <div class="footerText">Return GG</div>
+            </div>
+            <p>© Return.GG. Eternal Return and all related logos are trademarks of Nimble Neuron, inc. or its affiliates.</p>
         </footer>
     </div>
 </body>

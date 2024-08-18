@@ -13,16 +13,27 @@
 <body>
     <div id="app">
         <header id="header">
-            <div>header</div>
+            <div class="centerFlex">
+                <div class="logo"></div>
+                <div class="logoText">
+                    <h3 class="menuText">Return GG</h3>
+                    <p class="menuText menuSmallText">이터널 리턴 전적 분석 사이트</p>
+                </div>
+            </div>
+            <div class="alignTmpTag"></div>
         </header>
         <section id="loginContainer">
             <input type="text" placeholder="아이디" v-model="info.userId">
             <input type="password" placeholder="비밀번호" v-model="info.pwd">
-            <div class="button" @click="fnLogin">로그인</div>
-            <div class="button" @click="fnSignUp">회원가입</div>
+            <div class="loginButton longButton" @click="fnLogin">로그인</div>
+            <div class="signUpButton longButton" @click="fnSignUp">회원가입</div>
         </section>
         <footer id="footer">
-            <div>footer</div>
+            <div class="flexHorizontal">
+                <div class="smallLogo"></div>
+                <div class="footerText">Return GG</div>
+            </div>
+            <p>© Return.GG. Eternal Return and all related logos are trademarks of Nimble Neuron, inc. or its affiliates.</p>
         </footer>
     </div>
 </body>
@@ -46,7 +57,13 @@
                    contentType: "application/json",
                    success: (data) => {
                         if (data.length > 0) {
-                            sessionStorage.setItem("userInfo", JSON.stringify(data[ 0 ]) );
+                            // sessionStorage.setItem("userInfo", JSON.stringify(data[ 0 ]) );
+                            sessionStorage.setItem("userId", data[ 0 ].ID);
+                            sessionStorage.setItem("nickname", data[ 0 ].NICKNAME);
+                            sessionStorage.setItem("updateTime", data[ 0 ].UPDATETIME);
+                            sessionStorage.setItem("userNum", data[ 0 ].USERNUM);
+                            sessionStorage.setItem("mmr", data[ 0 ].MMR);
+                            
                             location.href = "Profile.html";
                         } else {
                             alert("아이디나 패스워드를 확인하세요.");
@@ -59,7 +76,7 @@
             }
         },
         mounted() {
-            sessionStorage.removeItem("userInfo");
+            sessionStorage.clear();
         }
     });
     app.mount('#app');
