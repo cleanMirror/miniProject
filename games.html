@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <meta charset="EUC-KR">
+    <title>Insert title here</title>
+    <link rel="stylesheet" href="css/total.css">
+</head>
+
+<body>
+    <div id="app">
+        <div v-if="isLoading" id="loading">
+            <div id="spinner"></div>
+        </div>
+        <header id="header">
+            <div class="centerFlex">
+                <div class="logo"></div>
+                <div class="logoText">
+                    <h3 class="menuText">Return GG</h3>
+                    <p class="menuText menuSmallText">이터널 리턴 전적 분석 사이트</p>
+                </div>
+                <a href="profile.html" class="menuItem">프로필</a>
+                <a href="character.html" class="menuItem">캐릭터 통계</a>
+                <a href="games.html" class="menuItem">최근 전적</a>
+                
+                <button class="basicBtn initBtn" @click="fnNavInit">전적 갱신</button>
+                <div class="menuItem">
+                    <div>지난 갱신일</div>
+                    <div>{{userInfo.updateTime}}</div>
+                </div>
+            </div>
+            <div class="centerFlex">
+                <div class="menuText">{{userInfo.nickname}}님 환영합니다!</div>
+                <button class="basicBtn logoutBtn" @click="fnLogout">로그아웃</button>
+            </div>
+        </header>
+        <section id="gamesContainer">
+            <div class="cardView">
+                <div v-for="item in games" class="gameCell">
+                    <div v-if     ="item.GAME_RANK == 1" class="over1"></div>
+                    <div v-else-if="item.GAME_RANK <= 3" class="over3"></div>
+                    <div v-else                          class="under3"></div>
+                    
+                    <div class="cellBlock">
+                        <div v-if     ="item.GAME_RANK == 1" class="over1Text" ># {{item.GAME_RANK}}</div>
+                        <div v-else-if="item.GAME_RANK <= 3" class="over3Text" ># {{item.GAME_RANK}}</div>
+                        <div v-else                          class="under3Text"># {{item.GAME_RANK}}</div>
+                        <div class="smallText">랭크</div>
+                        <div class="smallText">{{item.START_TIME}}</div>
+                    </div>
+                    <div class="cellBlock">
+                        <div class="smallImg">{{item.CHARACTER_NUM}}</div>
+                        <div class="smallText">{{item.CHARACTER_NUM}}</div>
+                    </div>
+                    <div class="cellBlock">
+                        <div class="boldText">{{item.TEAM_KILL}} / {{item.PLAYER_KILL}} / {{item.PLAYER_ASSISTANT}}</div>
+                        <div class="smallText">TK / K / A</div>
+                    </div>
+                    <div class="cellBlock">
+                        <div class="boldText">{{item.DAMAGE_TO_PLAYER}}</div>
+                        <div class="smallText">딜량</div>
+                    </div>
+                    <div class="cellBlock">
+                        <div class="boldText">{{item.DAMAGE_FROM_PLAYER}}</div>
+                        <div class="smallText">탱킹량</div>
+                    </div>
+                    <div class="cellBlock">
+                        <div class="boldText">{{item.TEAM_RECOVER}}</div>
+                        <div class="smallText">치유량</div>
+                    </div>
+                    <div class="cellBlock">
+                        <div v-if="item.MMR_GAIN < 0" class="boldText" style="color: blue;">{{item.MMR_GAIN}}</div>
+                        <div v-else class="boldText" style="color: red;">+{{item.MMR_GAIN}}</div>
+                        <div class="smallText">RP</div>
+                    </div>
+                </div>
+            </div>
+            <div id="navigation" class="flexRowsArea">
+                <div class="naviBtn" @click="fnPageBefore">이전</div>
+                <div v-for="index in totalPages">
+                    <div class="naviBtn selectNaviBtn" v-if="index == currentPage" @click="fnPageMove(index)">{{index}}</div>
+                    <div class="naviBtn" v-else @click="fnPageMove(index)">{{index}}</div>
+                </div>
+                <div class="naviBtn" @click="fnPageNext">다음</div>
+            </div>
+        </section>
+        <footer id="footer">
+            <div class="flexHorizontal">
+                <div class="smallLogo"></div>
+                <div class="footerText">Return GG</div>
+            </div>
+            <p>© Return.GG. Eternal Return and all related logos are trademarks of Nimble Neuron, inc. or its affiliates.</p>
+        </footer>
+    </div>
+</body>
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                userInfo: {
+                    userId : "",
+                    nickname : "",
+                    updateTime : "",
+                    userNum : "",
+                    mmr : ""
+                },
+                games: [],
+                isLoading: false,
+                isNext : true,
+                pageSize : 10,
+                prevPage : 1,
+                currentPage : 1,
+                nextPage : 2,
+                totalPages : 0,
+            };
+        },
+        methods: {
+            fnLoginCheck() {
+                var userId = sessionStorage.getItem("userId");
+                if (userId == null) {
+                    alert("로그인이 필요합니다.");
+                    location.href = "login.html";
+                }
+            },
+            fnLoadSessionInfo() {
+                this.userInfo.userId     = sessionStorage.getItem("userId");
+                this.userInfo.nickname   = sessionStorage.getItem("nickname");
+                this.userInfo.updateTime = sessionStorage.getItem("updateTime");
+                this.userInfo.userNum    = sessionStorage.getItem("userNum");
+                this.userInfo.mmr        = sessionStorage.getItem("mmr");
+            },
+            fnSettingPaging() {
+                const queryParams = new URLSearchParams(window.location.search);
+                var test = queryParams.get('page') || '';
+                
+                if (test != '') {
+                    this.prevPage    = parseInt(test) - 1;
+                    this.currentPage = parseInt(test);
+                    this.nextPage    = parseInt(test) + 1;
+                }
+
+                var offset = (this.currentPage - 1) * this.pageSize;
+
+                $.ajax({
+                    url: `http://localhost:3000/getGamesCount`,
+                    dataType: "json",
+                    type: "POST",
+                    data: JSON.stringify({"userNum" : this.userInfo.userNum}),
+                    contentType: "application/json",
+                    success: (data) => {
+                        var total = data[ 0 ].TOTAL;
+                        
+                        this.totalPages = Math.ceil(total / this.pageSize);
+
+                        $.ajax({
+                            url: `http://localhost:3000/getGamesPage`,
+                            dataType: "json",
+                            type: "POST",
+                            data: JSON.stringify({"userNum"  : this.userInfo.userNum,
+                                                  "offset"   : offset,
+                                                  "pageSize" : this.pageSize
+                            }),
+                            contentType: "application/json",
+                            success: (data) => {
+                                this.games = data;
+                            }
+                        });
+                    }
+                });
+            },
+            fnPageBefore() {
+                if (this.prevPage < 0) this.prevPage = 0;
+                location.href = `?page=${this.prevPage}`;
+            },
+            fnPageMove(index) {
+                console.log(index);
+                location.href = `?page=${index}`;
+            },
+            fnPageNext() {
+                if (this.nextPage > this.totalPages)
+                    this.nextPage = this.totalPages;
+                location.href = `?page=${this.nextPage}`;
+            }
+        },
+        mounted() {
+            this.fnLoginCheck();
+            this.fnLoadSessionInfo();
+            this.fnSettingPaging();
+        }
+    });
+    app.mount('#app');
+</script>
+
+</html>

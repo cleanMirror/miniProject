@@ -126,6 +126,15 @@
 
 /* 로그인 시작 */
 
+#mainLogo .logo {
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    background-image: url("../images/logo.png");
+    background-color: #212227;
+    background-size: cover;
+}
+
 #loginContainer {
     width: 500px;
     height: 300px;
@@ -278,8 +287,8 @@
 }
 
 #gridContainer {
-    width: 700px;
-    height: 550px;
+    width: auto;
+    height: auto;
     padding: 16px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -294,8 +303,8 @@
 }
 .area1 {
     grid-area: area1;
-    width: auto;
-    height: auto;
+    width: 250px;
+    height: 290px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -303,12 +312,22 @@
 .area2 {
     grid-area: area2;
     padding: 30px;
+    color: rgb(250, 250, 250);
+    font-weight: bold;
 }
-.area2 h1 {
-    margin-bottom: 16px;
+.area2 .nickname {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 32px;
 }
-.area2 * {
-    color: rgb(226, 226, 226);
+.area2 .season {
+    font-size: 16px;
+}
+.area2 .rankTier {
+    font-size: 20px;
+}
+.area2 .rp {
+    font-size: 28px;
 }
 
 .area3 {
@@ -332,17 +351,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: white;
-    font-weight: bold;
 }
 
-.flexRowsArea div {
+.colorWhiteBold {
+    color: white;
+    font-weight: bold;
     margin: 8px;
 }
 
 #gridContainer .rankImg {
-    width: 150px;
-    height: 250px;
+    width: 100%;
+    height: 100%;
     background-size: cover;
     margin: 16px;
 }
@@ -384,27 +403,15 @@
 
 #charContainer {
     width: auto;
-    height: 600px;
-    margin: 10vh auto;
+    height: 80vh;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-#menuCustomContainer {
-    display: inline-block;
-    width: 200px;
-    height: 600px;
-    background-color: #ffffff;
-    padding: 16px;
-    box-shadow: 3px 3px 3px #808080;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-}
-
 #statsContainer {
     display: inline-block;
-    width: 1000px;
+    width: auto;
     height: 600px;
     background-color: #ffffff;
     padding: 16px;
@@ -414,8 +421,71 @@
     border: 1px solid #ddd;
 }
 
-#statsContainer h3{
-    margin-bottom: 16px;
+#statsContainer .flexLine {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 16px;
+    margin-top: 0px;
+}
+
+#statsContainer .absolutePivot {
+    position: relative;
+}
+
+#statsContainer .basicBtn {
+    display: inline-block;
+    width: 100px;
+    height: 50px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+    color: white;
+}
+
+#statsContainer .menuBtn {
+    background-color: #ff8850;
+}
+#statsContainer .menuBtn:hover {
+    background-color: #db6c38;
+}
+
+#statsContainer .menuBox {
+    position: absolute;
+    top: 58px;
+    right: 0px;
+    width: 200px;
+    height: 500px;
+    background-color: white;
+    border: 1px solid black;
+    box-shadow: 3px 3px 3px rgb(131, 131, 131);
+    border-radius: 5px;
+    padding: 8px;
+}
+
+#menuCheckTable {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+}
+
+#menuCheckTable label {
+    margin: 8px;
+}
+
+#menuCheckTable .applyBtn {
+    width: 100%;
+    height: 100%;
+    background-color: #ff8850;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+}
+#menuCheckTable .applyBtn:hover {
+    background-color: #db6c38;
 }
 
 #tableStats {
@@ -426,11 +496,30 @@
 }
 
 #tableStats tr{
-    border: 1px solid black;
+    border: 1px solid rgb(197, 197, 197);
+    color : #387175;
+}
+
+#tableStats th {
+    width: auto;
+    height: 50px;
+    background-color: #43454e;
+    color: white;
+    font-size: 16px;
+}
+
+#tableStats td {
+    width: 150px;
+    font-size: 15px;
+    color: rgb(53, 53, 53);
+}
+
+#tableStats .charCell {
+    width: 250px;
 }
 
 .statsChar {
-    border: 0;
+    border-right: 1px solid rgb(197, 197, 197);
     text-align: left;
     display: flex;
     flex-direction: row;
@@ -442,10 +531,133 @@
     width: 50px;
     height: 50px;
     margin: 16px;
-    background-color: #ffaaff;
+    background-color: #838383;
+    border-radius: 50%;
 }
 
 /* 캐릭터 끝 */
+
+/* 최근 전적 시작 */
+
+#gamesContainer {
+    width: 100vw;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#gamesContainer .cardView {
+    display: inline-block;
+    width: 50vw;
+    height: 600px;
+    background-color: #ffffff;
+    padding: 16px;
+    overflow-y: scroll;
+    box-shadow: 3px 3px 3px #808080;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+
+#gamesContainer .gameCell {
+    width: auto;
+    height: 100px;
+    margin: 16px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    border: 1px solid rgb(192, 192, 192);
+    border-radius: 5px;
+}
+
+#gamesContainer .cellBlock {
+    width: 100px;
+    text-align: center;
+}
+
+#gamesContainer .smallImg {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-color: #ddd;
+}
+
+.gameCell > div {
+    margin: 16px;
+}
+
+#gamesContainer .over1 {
+    margin: 0px;
+    height: 100%;
+    border-radius: 5px;
+    border-left: 5px solid rgb(99, 211, 99);
+}
+#gamesContainer .over3 {
+    margin: 0px;
+    height: 100%;
+    border-radius: 5px;
+    border-left: 5px solid rgb(60, 145, 214);
+}
+#gamesContainer .under3 {
+    margin: 0px;
+    height: 100%;
+    border-radius: 5px;
+    border-left: 5px solid #aaa;
+}
+
+#gamesContainer .over1Text {
+    color: rgb(99, 211, 99);
+    font-weight: bold;
+    font-size: 20px;
+}
+#gamesContainer .over3Text {
+    color: rgb(60, 145, 214);
+    font-weight: bold;
+    font-size: 20px;
+}
+#gamesContainer .under3Text {
+    color: #aaa;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+#gamesContainer .smallText {
+    font-size: 12px;
+}
+#gamesContainer .boldText {
+    font-weight: bold;
+}
+
+#navigation {
+    margin: 16px;
+}
+
+#navigation .naviBtn{
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    margin: 8px;
+    text-align: center;
+    line-height: 50px;
+    border-radius: 5px;
+    background-color: #ff8850;
+    color: white;
+    font-weight: bold;
+}
+
+#navigation .naviBtn:hover {
+    background-color: #db6c38;
+}
+
+#navigation .selectNaviBtn {
+    background-color: rgb(60, 145, 214);
+}
+#navigation .selectNaviBtn:hover {
+    background-color: rgb(42, 116, 177);
+}
+
+/* 최근 전적 끝 */
 
 /* footer */
 

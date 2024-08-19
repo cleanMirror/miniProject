@@ -123,6 +123,7 @@ app.post('/init', async (req, res) => {
     }
 
     for (let item of userGames) {
+        item.startDtm = item.startDtm.substr(5, 5);
         var query = `MERGE INTO GAMES G
                     USING DUAL ON (G.GAME_ID = ${item.gameId})
                     WHEN MATCHED THEN
@@ -140,7 +141,8 @@ app.post('/init', async (req, res) => {
                                 G.PLAYER_ASSISTANT,
                                 G.TEAM_KILL,
                                 G.CC_TIME_TO_PLAYER,
-                                G.GAME_ID)
+                                G.GAME_ID,
+                                G.START_TIME)
                         VALUES (${item.userNum},
                                 ${item.characterNum},
                                 ${item.gameRank},
@@ -153,7 +155,8 @@ app.post('/init', async (req, res) => {
                                 ${item.playerAssistant},
                                 ${item.teamKill},
                                 ${item.ccTimeToPlayer},
-                                ${item.gameId})`;
+                                ${item.gameId},
+                                '${item.startDtm}')`;
         try {
             await connection.execute(query, [], { autoCommit: true });
         } catch (error) {
@@ -294,6 +297,45 @@ app.post('/getMenuCheck', async (req, res) => {
     const { userId } = req.body;
 
     var query = `SELECT * FROM MENU_CHECK WHERE ID = '${userId}'`;
+
+    try {
+        var result = await connection.execute(query);
+
+        var rows = jsonParse(result);
+        res.json(rows);
+
+    } catch (error) {
+        console.error('Error executing query', error);
+        res.status(500).send('Error executing query');
+    }
+});
+
+app.post('/getGamesCount', async (req, res) => {
+    const { userNum } = req.body;
+
+    var query = `SELECT COUNT(*) AS TOTAL
+                FROM GAMES
+                WHERE USERNUM = ${userNum}`;
+
+    try {
+        var result = await connection.execute(query);
+
+        var rows = jsonParse(result);
+        res.json(rows);
+
+    } catch (error) {
+        console.error('Error executing query', error);
+        res.status(500).send('Error executing query');
+    }
+});
+
+app.post('/getGamesPage', async (req, res) => {
+    const { userNum, offset, pageSize } = req.body;
+
+    var query = `SELECT * 
+                FROM GAMES
+                WHERE USERNUM = ${userNum}
+                OFFSET ${offset} ROWS FETCH FIRST ${pageSize} ROWS ONLY`;
 
     try {
         var result = await connection.execute(query);

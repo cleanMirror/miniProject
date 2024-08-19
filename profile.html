@@ -24,6 +24,7 @@
                 </div>
                 <a href="profile.html" class="menuItem">프로필</a>
                 <a href="character.html" class="menuItem">캐릭터 통계</a>
+                <a href="games.html" class="menuItem">최근 전적</a>
                 
                 <button class="basicBtn initBtn" @click="fnNavInit">전적 갱신</button>
                 <div class="menuItem">
@@ -48,28 +49,28 @@
                     <div class="rankImg mithrilImg"  v-else></div>
                 </div>
                 <div class="area2">
-                    <h1>{{userInfo.nickname}}</h1>
-                    <h6>정규시즌 4</h6>
-                    <div>{{rankTier}}</div>
-                    <h2>{{userInfo.mmr}} RP</h2>
+                    <div class="nickname">{{userInfo.nickname}}</div>
+                    <div class="season">정규시즌 4</div>
+                    <div class="rankTier">{{rankTier}}</div>
+                    <div class="rp">{{userInfo.mmr}} RP</div>
                 </div>
                 <div class="area3 flexColumnArea">
-                    <div class="charImg" ref="most1">{{mostCharInfo[ 0 ].char}}</div>
-                    <div class="flexRowsArea">
+                    <div class="charImg" ref="most1"></div>
+                    <div class="flexRowsArea colorWhiteBold">
                         <div>승률 {{mostCharInfo[ 0 ].avgWins}}</div>
                         <div>({{mostCharInfo[ 0 ].totalGame}}게임)</div>
                     </div>
                 </div>
                 <div class="area4 flexColumnArea">
-                    <div class="charImg" ref="most2">{{mostCharInfo[ 1 ].char}}</div>
-                    <div class="flexRowsArea">
+                    <div class="charImg" ref="most2"></div>
+                    <div class="flexRowsArea colorWhiteBold">
                         <div>승률 {{mostCharInfo[ 1 ].avgWins}}</div>
                         <div>({{mostCharInfo[ 1 ].totalGame}}게임)</div>
                     </div>
                 </div>
                 <div class="area5 flexColumnArea">
-                    <div class="charImg" ref="most3">{{mostCharInfo[ 2 ].char}}</div>
-                    <div class="flexRowsArea">
+                    <div class="charImg" ref="most3"></div>
+                    <div class="flexRowsArea colorWhiteBold">
                         <div>승률 {{mostCharInfo[ 2 ].avgWins}}</div>
                         <div>({{mostCharInfo[ 2 ].totalGame}}게임)</div>
                     </div>
@@ -273,15 +274,15 @@
                 var mmr = this.userInfo.mmr;
 
                 var color = "";
-                if      (mmr <=  799) color = "#A8AAB9"; // 아이언
-                else if (mmr <= 1599) color = "#AB5721"; // 브론즈
-                else if (mmr <= 2599) color = "#C4CBE6"; // 실버
-                else if (mmr <= 3799) color = "#DFB664"; // 골드
-                else if (mmr <= 5199) color = "#7FE3AD"; // 플래티넘
-                else if (mmr <= 6799) color = "#F0D9EC"; // 다이아몬드
-                else                  color = "#4B999F"; // 미스릴 이상
+                if      (mmr <=  799) color = "#858792"; // 아이언
+                else if (mmr <= 1599) color = "#804019"; // 브론즈
+                else if (mmr <= 2599) color = "#9ba0b4"; // 실버
+                else if (mmr <= 3799) color = "#b8934b"; // 골드
+                else if (mmr <= 5199) color = "#66b68b"; // 플래티넘
+                else if (mmr <= 6799) color = "#c4a5be"; // 다이아몬드
+                else                  color = "#387175"; // 미스릴 이상
 
-                this.$refs.tierBack.style.background = `radial-gradient(circle at 20% 20%, ${color}, #191719)`;
+                this.$refs.tierBack.style.background = `radial-gradient(circle at 10% 10%, ${color}, #191719)`;
 
             },
             fnSetMostCharImg() {
