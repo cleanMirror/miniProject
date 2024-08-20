@@ -23,20 +23,23 @@
             <div class="alignTmpTag"></div>
         </header>
         <section id="signUpContainer">
-            <div class="flexLine">
-                <input v-if="!isCheckedId" class="idBox" type="text" placeholder="아이디" v-model="info.userId" ref="idBox" @focus="fnSetBoxLine('red')" @blur="fnSetBoxLine('black')">
-                <input v-else disabled class="idBox" type="text" placeholder="아이디" v-model="info.userId">
-                <div class="checkBtn" @click="fnIdCheck">중복확인</div>
+            <h1>회원가입</h1>
+            <div id="signUpBox">
+                <div class="flexLine">
+                    <input v-if="!isCheckedId" class="idBox" type="text" placeholder="아이디" v-model="info.userId" ref="idBox" @focus="fnSetBoxLine('red')" @blur="fnSetBoxLine('black')">
+                    <input v-else disabled class="idBox" type="text" placeholder="아이디" v-model="info.userId">
+                    <div class="checkBtn" @click="fnIdCheck">중복확인</div>
+                </div>
+                <input type="password" placeholder="비밀번호" v-model="info.pwd" @keyup="fnPwdPress" ref="pwdBox" @focus="fnSetBoxLine('red')" @blur="fnSetBoxLine('black')">
+                <input type="password" placeholder="비밀번호 확인" v-model="checkPwd" @keyup="fnPwdPress" ref="pwdCheckBox" @focus="fnSetBoxLine('red')" @blur="fnSetBoxLine('black')">
+                <div class="pwdText" ref="pwdText">{{pwdText}}</div>
+                <div class="flexLine">
+                    <input v-if="!isCheckedNickname" class="idBox" type="text" placeholder="유저 닉네임" v-model="info.nickname" ref="nicknameBox" @focus="fnSetBoxLine('red')" @blur="fnSetBoxLine('black')">
+                    <input v-else disabled class="idBox" type="text" placeholder="유저 닉네임" v-model="info.nickname" @focus="fnSetBoxLine('red')" @blur="fnSetBoxLine('black')">
+                    <div class="checkBtn" @click="fnNicknameCheck">유저확인</div>
+                </div>
+                <div class="signUpButton" @click="fnSignUp">가입하기</div>
             </div>
-            <input type="password" placeholder="비밀번호" v-model="info.pwd" @keyup="fnPwdPress" ref="pwdBox" @focus="fnSetBoxLine('red')" @blur="fnSetBoxLine('black')">
-            <input type="password" placeholder="비밀번호 확인" v-model="checkPwd" @keyup="fnPwdPress" ref="pwdCheckBox" @focus="fnSetBoxLine('red')" @blur="fnSetBoxLine('black')">
-            <div class="pwdText" ref="pwdText">{{pwdText}}</div>
-            <div class="flexLine">
-                <input v-if="!isCheckedNickname" class="idBox" type="text" placeholder="유저 닉네임" v-model="info.nickname" ref="nicknameBox" @focus="fnSetBoxLine('red')" @blur="fnSetBoxLine('black')">
-                <input v-else disabled class="idBox" type="text" placeholder="유저 닉네임" v-model="info.nickname" @focus="fnSetBoxLine('red')" @blur="fnSetBoxLine('black')">
-                <div class="checkBtn" @click="fnNicknameCheck">유저확인</div>
-            </div>
-            <div class="signUpButton" @click="fnSignUp">가입하기</div>
         </section>
         <footer id="footer">
             <div class="flexHorizontal">

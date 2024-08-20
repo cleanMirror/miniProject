@@ -28,7 +28,7 @@
                 
                 <button class="basicBtn initBtn" @click="fnNavInit">전적 갱신</button>
                 <div class="menuItem">
-                    <div>지난 갱신일</div>
+                    <div class="updateLabel">지난 갱신일</div>
                     <div>{{userInfo.updateTime}}</div>
                 </div>
             </div>
@@ -39,7 +39,11 @@
         </header>
         <section id="gamesContainer">
             <div class="cardView">
-                <div v-for="item in games" class="gameCell">
+                <template v-if="games.length == 0">
+                    <div class="alignCenter">데이터가 없습니다.</div>
+                </template>
+                <template v-else>
+                <div v-for="(item, index) in games" class="gameCell">
                     <div v-if     ="item.GAME_RANK == 1" class="over1"></div>
                     <div v-else-if="item.GAME_RANK <= 3" class="over3"></div>
                     <div v-else                          class="under3"></div>
@@ -48,12 +52,14 @@
                         <div v-if     ="item.GAME_RANK == 1" class="over1Text" ># {{item.GAME_RANK}}</div>
                         <div v-else-if="item.GAME_RANK <= 3" class="over3Text" ># {{item.GAME_RANK}}</div>
                         <div v-else                          class="under3Text"># {{item.GAME_RANK}}</div>
-                        <div class="smallText">랭크</div>
-                        <div class="smallText">{{item.START_TIME}}</div>
+                        <div class="smallText">
+                            <div>랭크</div>
+                            <div>{{item.START_TIME}}</div>
+                        </div>
                     </div>
                     <div class="cellBlock">
-                        <div class="smallImg">{{item.CHARACTER_NUM}}</div>
-                        <div class="smallText">{{item.CHARACTER_NUM}}</div>
+                        <div class="smallImg" :style="fnSetCharImg(item.CHARACTER_NUM)"></div>
+                        <div class="smallText textBold">{{charName[ index ].charName}}</div>
                     </div>
                     <div class="cellBlock">
                         <div class="boldText">{{item.TEAM_KILL}} / {{item.PLAYER_KILL}} / {{item.PLAYER_ASSISTANT}}</div>
@@ -77,6 +83,7 @@
                         <div class="smallText">RP</div>
                     </div>
                 </div>
+                </template>
             </div>
             <div id="navigation" class="flexRowsArea">
                 <div class="naviBtn" @click="fnPageBefore">이전</div>
@@ -108,6 +115,7 @@
                     mmr : ""
                 },
                 games: [],
+                charName: [],
                 isLoading: false,
                 isNext : true,
                 pageSize : 10,
@@ -118,6 +126,125 @@
             };
         },
         methods: {
+            fnNavProfile() {
+                location.href = "profile.html";
+            },
+            fnNavChar() {
+                location.href = "character.html";
+            },
+            fnLogout() {
+                sessionStorage.clear();
+                location.href = "login.html";
+            },
+            fnNavInit() {
+                this.isLoading = true;
+                this.fnSetUpdateTime();
+                this.fnUpdateMMR();
+                this.fnApiRequest("");
+            },
+            fnSetUpdateTime() {
+                $.ajax({
+                    url: `http://localhost:3000/updateTime`,
+                    dataType: "json",
+                    type: "POST",
+                    data: JSON.stringify({ "userId": this.userInfo.userId }),
+                    contentType: "application/json",
+                    success: (data) => {
+                        this.userInfo.updateTime = data[ 0 ].UPDATETIME;
+                        sessionStorage.setItem("updateTime", data[ 0 ].UPDATETIME);
+                    }
+                });
+            },
+            fnUpdateMMR() {
+                var userNum = this.userInfo.userNum;
+
+                $.ajax({
+                    url: `https://open-api.bser.io/v1/user/stats/${userNum}/25`,
+                    dataType: "json",
+                    type: "GET",
+                    contentType: "application/json",
+                    headers: {
+                        "accept": "application/json",
+                        "x-api-key": "2hjkR0q4z62fTg87aY6O3giO9jcQ70C7rP1uSwwc"
+                    },
+                    success: (data) => {
+                        var userId = this.userInfo.userId;
+                        var mmr = data.userStats[0].mmr;
+
+                        $.ajax({
+                            url: `http://localhost:3000/updateMMR`,
+                            dataType: "json",
+                            type: "POST",
+                            data: JSON.stringify({ "userId": userId, "mmr": mmr }),
+                            contentType: "application/json",
+                            success: (data) => {
+                                this.userInfo.mmr = data[ 0 ].MMR;
+                                sessionStorage.setItem("mmr", data[ 0 ].MMR);
+                            }
+                        });
+                    }
+                });
+            },
+            // 한번에 다 주는 방식이 아니고, 10경기씩 페이지로 나누어 제공한다.
+            // 그래서 next로 다음 페이지 요청을 보내야한다..
+            // 이를 재귀 함수로 구현함.
+            fnApiRequest(next) {
+                // 1초에 1 request 제한이 걸려있음.
+                this.sleep(1000);
+
+                var userNum = this.userInfo.userNum;
+
+                var urlStr = "";
+                if (next == "") {
+                    urlStr = `https://open-api.bser.io/v1/user/games/${userNum}`;
+                } else {
+                    urlStr = `https://open-api.bser.io/v1/user/games/${userNum}?next=${next}`;
+                }
+
+                $.ajax({
+                    url: urlStr,
+                    dataType: "json",
+                    type: "GET",
+                    contentType: "application/json",
+                    headers: {
+                        "accept": "application/json",
+                        "x-api-key": "2hjkR0q4z62fTg87aY6O3giO9jcQ70C7rP1uSwwc"
+                    },
+                    success: (data) => {
+                        // 재귀 종료 조건
+                        if (data.next == undefined || !this.isNext) {
+                            this.isLoading = false;
+                            location.reload(true);
+                            return;
+                        }
+
+                        // 현재 시즌만 다룸
+                        var games = [];
+                        for (var game of data.userGames) {
+                            if (game.seasonId == 25)
+                                games.push(game);
+                        }
+
+                        // 10게임씩 db에 저장
+                        $.ajax({
+                            url: `http://localhost:3000/init`,
+                            dataType: "json",
+                            type: "POST",
+                            data: JSON.stringify({ "userGames": games }),
+                            contentType: "application/json",
+                            success: (data) => {
+                                // db에서 중첩된 레코드를 발견하면 api질의를 중단해야 함.
+                                if (!data[ 0 ].next) {
+                                    this.isNext = false;
+                                }
+                            }
+                        });
+
+                        // 재귀 호출
+                        this.fnApiRequest(data.next);
+                    }
+                });
+            },
             fnLoginCheck() {
                 var userId = sessionStorage.getItem("userId");
                 if (userId == null) {
@@ -134,12 +261,12 @@
             },
             fnSettingPaging() {
                 const queryParams = new URLSearchParams(window.location.search);
-                var test = queryParams.get('page') || '';
+                var pageNum = queryParams.get('page') || '';
                 
-                if (test != '') {
-                    this.prevPage    = parseInt(test) - 1;
-                    this.currentPage = parseInt(test);
-                    this.nextPage    = parseInt(test) + 1;
+                if (pageNum != '') {
+                    this.prevPage    = parseInt(pageNum) - 1;
+                    this.currentPage = parseInt(pageNum);
+                    this.nextPage    = parseInt(pageNum) + 1;
                 }
 
                 var offset = (this.currentPage - 1) * this.pageSize;
@@ -166,13 +293,14 @@
                             contentType: "application/json",
                             success: (data) => {
                                 this.games = data;
+                                this.fnSetCharName();
                             }
                         });
                     }
                 });
             },
             fnPageBefore() {
-                if (this.prevPage < 0) this.prevPage = 0;
+                if (this.prevPage <= 0) this.prevPage = 1;
                 location.href = `?page=${this.prevPage}`;
             },
             fnPageMove(index) {
@@ -180,10 +308,99 @@
                 location.href = `?page=${index}`;
             },
             fnPageNext() {
-                if (this.nextPage > this.totalPages)
+                if (this.nextPage > this.totalPages) {
                     this.nextPage = this.totalPages;
+                }
                 location.href = `?page=${this.nextPage}`;
-            }
+            },
+            fnSetCharImg(charNum) {
+                return {
+                    backgroundImage : `url(./images/${charNum}_small.png)`
+                }
+            },
+            fnSetCharName() {
+                for (let info of this.games) {
+                    if (info.CHARACTER_NUM == 1) { this.charName.push({"charName" : "재키"}); };
+                    if (info.CHARACTER_NUM == 2) { this.charName.push({"charName" : "아야"}); };
+                    if (info.CHARACTER_NUM == 3) { this.charName.push({"charName" : "현우"}); };
+                    if (info.CHARACTER_NUM == 4) { this.charName.push({"charName" : "매그"}); };
+                    if (info.CHARACTER_NUM == 5) { this.charName.push({"charName" : "피오라"}); };
+                    if (info.CHARACTER_NUM == 6) { this.charName.push({"charName" : "나딘"}); };
+                    if (info.CHARACTER_NUM == 7) { this.charName.push({"charName" : "자히르"}); };
+                    if (info.CHARACTER_NUM == 8) { this.charName.push({"charName" : "하트"}); };
+                    if (info.CHARACTER_NUM == 9) { this.charName.push({"charName" : "아이솔"}); };
+                    if (info.CHARACTER_NUM == 10) { this.charName.push({"charName" : "리다이린"}); };
+                    if (info.CHARACTER_NUM == 11) { this.charName.push({"charName" : "유키"}); };
+                    if (info.CHARACTER_NUM == 12) { this.charName.push({"charName" : "혜진"}); };
+                    if (info.CHARACTER_NUM == 13) { this.charName.push({"charName" : "쇼우"}); };
+                    if (info.CHARACTER_NUM == 14) { this.charName.push({"charName" : "키아라"}); };
+                    if (info.CHARACTER_NUM == 15) { this.charName.push({"charName" : "시셀라"}); };
+                    if (info.CHARACTER_NUM == 16) { this.charName.push({"charName" : "실비아"}); };
+                    if (info.CHARACTER_NUM == 17) { this.charName.push({"charName" : "아드리아나"}); };
+                    if (info.CHARACTER_NUM == 18) { this.charName.push({"charName" : "쇼이치"}); };
+                    if (info.CHARACTER_NUM == 19) { this.charName.push({"charName" : "엠마"}); };
+                    if (info.CHARACTER_NUM == 20) { this.charName.push({"charName" : "레녹스"}); };
+                    if (info.CHARACTER_NUM == 21) { this.charName.push({"charName" : "로지"}); };
+                    if (info.CHARACTER_NUM == 22) { this.charName.push({"charName" : "루크"}); };
+                    if (info.CHARACTER_NUM == 23) { this.charName.push({"charName" : "캐시"}); };
+                    if (info.CHARACTER_NUM == 24) { this.charName.push({"charName" : "아델라"}); };
+                    if (info.CHARACTER_NUM == 25) { this.charName.push({"charName" : "버니스"}); };
+                    if (info.CHARACTER_NUM == 26) { this.charName.push({"charName" : "바바라"}); };
+                    if (info.CHARACTER_NUM == 27) { this.charName.push({"charName" : "알렉스"}); };
+                    if (info.CHARACTER_NUM == 28) { this.charName.push({"charName" : "수아"}); };
+                    if (info.CHARACTER_NUM == 29) { this.charName.push({"charName" : "레온"}); };
+                    if (info.CHARACTER_NUM == 30) { this.charName.push({"charName" : "일레븐"}); };
+                    if (info.CHARACTER_NUM == 31) { this.charName.push({"charName" : "리오"}); };
+                    if (info.CHARACTER_NUM == 32) { this.charName.push({"charName" : "윌리엄"}); };
+                    if (info.CHARACTER_NUM == 33) { this.charName.push({"charName" : "니키"}); };
+                    if (info.CHARACTER_NUM == 34) { this.charName.push({"charName" : "나타폰"}); };
+                    if (info.CHARACTER_NUM == 35) { this.charName.push({"charName" : "얀"}); };
+                    if (info.CHARACTER_NUM == 36) { this.charName.push({"charName" : "이바"}); };
+                    if (info.CHARACTER_NUM == 37) { this.charName.push({"charName" : "다니엘"}); };
+                    if (info.CHARACTER_NUM == 38) { this.charName.push({"charName" : "제니"}); };
+                    if (info.CHARACTER_NUM == 39) { this.charName.push({"charName" : "카밀로"}); };
+                    if (info.CHARACTER_NUM == 40) { this.charName.push({"charName" : "클로에"}); };
+                    if (info.CHARACTER_NUM == 41) { this.charName.push({"charName" : "요한"}); };
+                    if (info.CHARACTER_NUM == 42) { this.charName.push({"charName" : "비앙카"}); };
+                    if (info.CHARACTER_NUM == 43) { this.charName.push({"charName" : "셀린"}); };
+                    if (info.CHARACTER_NUM == 44) { this.charName.push({"charName" : "에키온"}); };
+                    if (info.CHARACTER_NUM == 45) { this.charName.push({"charName" : "마이"}); };
+                    if (info.CHARACTER_NUM == 46) { this.charName.push({"charName" : "에이든"}); };
+                    if (info.CHARACTER_NUM == 47) { this.charName.push({"charName" : "라우라"}); };
+                    if (info.CHARACTER_NUM == 48) { this.charName.push({"charName" : "띠아"}); };
+                    if (info.CHARACTER_NUM == 49) { this.charName.push({"charName" : "펠릭스"}); };
+                    if (info.CHARACTER_NUM == 50) { this.charName.push({"charName" : "엘레나"}); };
+                    if (info.CHARACTER_NUM == 51) { this.charName.push({"charName" : "프리야"}); };
+                    if (info.CHARACTER_NUM == 52) { this.charName.push({"charName" : "아디나"}); };
+                    if (info.CHARACTER_NUM == 53) { this.charName.push({"charName" : "마커스"}); };
+                    if (info.CHARACTER_NUM == 54) { this.charName.push({"charName" : "칼라"}); };
+                    if (info.CHARACTER_NUM == 55) { this.charName.push({"charName" : "에스텔"}); };
+                    if (info.CHARACTER_NUM == 56) { this.charName.push({"charName" : "피올로"}); };
+                    if (info.CHARACTER_NUM == 57) { this.charName.push({"charName" : "마르티나"}); };
+                    if (info.CHARACTER_NUM == 58) { this.charName.push({"charName" : "헤이즈"}); };
+                    if (info.CHARACTER_NUM == 59) { this.charName.push({"charName" : "아이작"}); };
+                    if (info.CHARACTER_NUM == 60) { this.charName.push({"charName" : "타지아"}); };
+                    if (info.CHARACTER_NUM == 61) { this.charName.push({"charName" : "이렘"}); };
+                    if (info.CHARACTER_NUM == 62) { this.charName.push({"charName" : "테오도르"}); };
+                    if (info.CHARACTER_NUM == 63) { this.charName.push({"charName" : "이안"}); };
+                    if (info.CHARACTER_NUM == 64) { this.charName.push({"charName" : "바냐"}); };
+                    if (info.CHARACTER_NUM == 65) { this.charName.push({"charName" : "데비&마를렌"}); };
+                    if (info.CHARACTER_NUM == 66) { this.charName.push({"charName" : "아르다"}); };
+                    if (info.CHARACTER_NUM == 67) { this.charName.push({"charName" : "아비게일"}); };
+                    if (info.CHARACTER_NUM == 68) { this.charName.push({"charName" : "알론소"}); };
+                    if (info.CHARACTER_NUM == 69) { this.charName.push({"charName" : "레니"}); };
+                    if (info.CHARACTER_NUM == 70) { this.charName.push({"charName" : "츠바메"}); };
+                    if (info.CHARACTER_NUM == 71) { this.charName.push({"charName" : "케네스"}); };
+                    if (info.CHARACTER_NUM == 72) { this.charName.push({"charName" : "카티야"}); };
+                    if (info.CHARACTER_NUM == 73) { this.charName.push({"charName" : "샬럿"}); };
+                    if (info.CHARACTER_NUM == 74) { this.charName.push({"charName" : "다르코"}); };
+                    if (info.CHARACTER_NUM == 75) { this.charName.push({"charName" : "르노어"}); };
+                }
+            },
+            sleep(time) {
+                const wakeUpTime = Date.now() + time;
+                while (Date.now() < wakeUpTime) { }
+            },
         },
         mounted() {
             this.fnLoginCheck();

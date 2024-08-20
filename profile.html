@@ -28,7 +28,7 @@
                 
                 <button class="basicBtn initBtn" @click="fnNavInit">전적 갱신</button>
                 <div class="menuItem">
-                    <div>지난 갱신일</div>
+                    <div class="updateLabel">지난 갱신일</div>
                     <div>{{userInfo.updateTime}}</div>
                 </div>
             </div>
@@ -56,22 +56,22 @@
                 </div>
                 <div class="area3 flexColumnArea">
                     <div class="charImg" ref="most1"></div>
-                    <div class="flexRowsArea colorWhiteBold">
-                        <div>승률 {{mostCharInfo[ 0 ].avgWins}}</div>
+                    <div class="flexColumnArea colorWhiteBold">
+                        <div>승률 {{mostCharInfo[ 0 ].avgWins}}%</div>
                         <div>({{mostCharInfo[ 0 ].totalGame}}게임)</div>
                     </div>
                 </div>
                 <div class="area4 flexColumnArea">
                     <div class="charImg" ref="most2"></div>
-                    <div class="flexRowsArea colorWhiteBold">
-                        <div>승률 {{mostCharInfo[ 1 ].avgWins}}</div>
+                    <div class="flexColumnArea colorWhiteBold">
+                        <div>승률 {{mostCharInfo[ 1 ].avgWins}}%</div>
                         <div>({{mostCharInfo[ 1 ].totalGame}}게임)</div>
                     </div>
                 </div>
                 <div class="area5 flexColumnArea">
                     <div class="charImg" ref="most3"></div>
-                    <div class="flexRowsArea colorWhiteBold">
-                        <div>승률 {{mostCharInfo[ 2 ].avgWins}}</div>
+                    <div class="flexColumnArea colorWhiteBold">
+                        <div>승률 {{mostCharInfo[ 2 ].avgWins}}%</div>
                         <div>({{mostCharInfo[ 2 ].totalGame}}게임)</div>
                     </div>
                 </div>
@@ -197,6 +197,7 @@
                         // 재귀 종료 조건
                         if (data.next == undefined || !this.isNext) {
                             this.isLoading = false;
+                            location.reload(true);
                             return;
                         }
 
@@ -230,30 +231,30 @@
             fnCalcMMRTier() {
                 var mmr = this.userInfo.mmr;
 
-                if      (mmr <=  199) this.rankTier = "아이언 4";
-                else if (mmr <=  399) this.rankTier = "아이언 3";
-                else if (mmr <=  599) this.rankTier = "아이언 2";
-                else if (mmr <=  799) this.rankTier = "아이언 1";
-                else if (mmr <=  999) this.rankTier = "브론즈 4";
-                else if (mmr <= 1199) this.rankTier = "브론즈 3";
-                else if (mmr <= 1399) this.rankTier = "브론즈 2";
-                else if (mmr <= 1599) this.rankTier = "브론즈 1";
-                else if (mmr <= 1849) this.rankTier = "실버 4";
-                else if (mmr <= 2099) this.rankTier = "실버 3";
-                else if (mmr <= 2349) this.rankTier = "실버 2";
-                else if (mmr <= 2599) this.rankTier = "실버 1";
-                else if (mmr <= 2899) this.rankTier = "골드 4";
-                else if (mmr <= 3199) this.rankTier = "골드 3";
-                else if (mmr <= 3499) this.rankTier = "골드 2";
-                else if (mmr <= 3799) this.rankTier = "골드 1";
-                else if (mmr <= 4149) this.rankTier = "플래티넘4";
-                else if (mmr <= 4499) this.rankTier = "플래티넘3";
-                else if (mmr <= 4849) this.rankTier = "플래티넘2";
-                else if (mmr <= 5199) this.rankTier = "플래티넘1";
-                else if (mmr <= 5599) this.rankTier = "다이아몬드4";
-                else if (mmr <= 5999) this.rankTier = "다이아몬드3";
-                else if (mmr <= 6399) this.rankTier = "다이아몬드2";
-                else if (mmr <= 6799) this.rankTier = "다이아몬드1";
+                if      (mmr <=  199) this.rankTier = "아이언 IV";
+                else if (mmr <=  399) this.rankTier = "아이언 III";
+                else if (mmr <=  599) this.rankTier = "아이언 II";
+                else if (mmr <=  799) this.rankTier = "아이언 I";
+                else if (mmr <=  999) this.rankTier = "브론즈 IV";
+                else if (mmr <= 1199) this.rankTier = "브론즈 III";
+                else if (mmr <= 1399) this.rankTier = "브론즈 II";
+                else if (mmr <= 1599) this.rankTier = "브론즈 I";
+                else if (mmr <= 1849) this.rankTier = "실버 IV";
+                else if (mmr <= 2099) this.rankTier = "실버 III";
+                else if (mmr <= 2349) this.rankTier = "실버 II";
+                else if (mmr <= 2599) this.rankTier = "실버 I";
+                else if (mmr <= 2899) this.rankTier = "골드 IV";
+                else if (mmr <= 3199) this.rankTier = "골드 III";
+                else if (mmr <= 3499) this.rankTier = "골드 II";
+                else if (mmr <= 3799) this.rankTier = "골드 I";
+                else if (mmr <= 4149) this.rankTier = "플래티넘 IV";
+                else if (mmr <= 4499) this.rankTier = "플래티넘 III";
+                else if (mmr <= 4849) this.rankTier = "플래티넘 II";
+                else if (mmr <= 5199) this.rankTier = "플래티넘 I";
+                else if (mmr <= 5599) this.rankTier = "다이아몬드 IV";
+                else if (mmr <= 5999) this.rankTier = "다이아몬드 III";
+                else if (mmr <= 6399) this.rankTier = "다이아몬드 II";
+                else if (mmr <= 6799) this.rankTier = "다이아몬드 I";
                 else                  this.rankTier = "미스릴 이상";
             },
             fnLoginCheck() {
@@ -283,7 +284,6 @@
                 else                  color = "#387175"; // 미스릴 이상
 
                 this.$refs.tierBack.style.background = `radial-gradient(circle at 10% 10%, ${color}, #191719)`;
-
             },
             fnSetMostCharImg() {
                 var most1Char = this.mostCharInfo[ 0 ].char;
@@ -302,8 +302,8 @@
         mounted() {
             this.fnLoginCheck();
             this.fnLoadSessionInfo();
-            this.fnCalcMMRTier();
             this.fnUpdateMMR();
+            this.fnCalcMMRTier();
             this.fnSetTierBackground();
         }
     });

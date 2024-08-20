@@ -22,16 +22,20 @@
             </div>
             <div class="alignTmpTag"></div>
         </header>
-        <section id="mainLogo">
-            <div class="logo"></div>
-            <div>Return GG</div>
-            <div>이터널 리턴 전적 분석 사이트</div>
-        </section>
         <section id="loginContainer">
-            <input type="text" placeholder="아이디" v-model="info.userId">
-            <input type="password" placeholder="비밀번호" v-model="info.pwd">
-            <div class="loginButton longButton" @click="fnLogin">로그인</div>
-            <div class="signUpButton longButton" @click="fnSignUp">회원가입</div>
+            <section id="mainLogo">
+                <div class="logo"></div>
+                <div>
+                    <h1 class="mainTitle">Return GG</h1>
+                    <div class="smallText">이터널 리턴 전적 분석 사이트</div>
+                </div>
+            </section>
+            <section id="loginBox">
+                <input type="text" placeholder="아이디" v-model="info.userId">
+                <input type="password" placeholder="비밀번호" v-model="info.pwd">
+                <div class="loginButton longButton" @click="fnLogin">로그인</div>
+                <div class="signUpButton longButton" @click="fnSignUp">회원가입</div>
+            </section>
         </section>
         <footer id="footer">
             <div class="flexHorizontal">
@@ -68,6 +72,10 @@
                             sessionStorage.setItem("updateTime", data[ 0 ].UPDATETIME);
                             sessionStorage.setItem("userNum", data[ 0 ].USERNUM);
                             sessionStorage.setItem("mmr", data[ 0 ].MMR);
+                            
+                            if (data[ 0 ].UPDATETIME == null) {
+                                sessionStorage.setItem("updateTime", "-");
+                            }
                             
                             location.href = "Profile.html";
                         } else {

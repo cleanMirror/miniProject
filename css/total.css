@@ -4,6 +4,11 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "nanumNormal";
+}
+
+body {
+    background-color: #ececec;
 }
 
 /* 로딩바 */
@@ -24,7 +29,8 @@
     display: inline-block;
     width: 50px;
     height: 50px;
-    background-color: black;
+    background-size: cover;
+    background-image: url(../images/loadingImg.png);
     animation: spin 1s infinite linear;
 }
 
@@ -41,6 +47,23 @@
 }
 
 /* 로딩바 끝 */
+
+/* 공통 */
+
+#app {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.smallText {
+    font-size: 12px;
+}
+
+/* 공통 끝 */
 
 /* header 시작 */
 
@@ -75,16 +98,22 @@
 #header .menuItem {
     margin: 16px;
     color: white;
-    font-weight: bold;
     text-decoration: none;
+    font-family: "nanumBold";
 }
 
 #header .menuText {
     color: white;
+    font-family: "nanumBold";
 }
 
 #header .menuSmallText {
-    font-size: 10px;
+    font-size: 12px;
+    font-family: "nanumNormal";
+}
+
+#header .updateLabel {
+    font-family: "nanumBold";
 }
 
 #header .basicBtn {
@@ -96,8 +125,8 @@
     outline: none;
     cursor: pointer;
     border-radius: 5px;
-    font-weight: bold;
     color: white;
+    font-family: "nanumBold";
 }
 
 #header .logoutBtn {
@@ -126,20 +155,46 @@
 
 /* 로그인 시작 */
 
+#loginContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 200px;
+}
+
+#mainLogo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
 #mainLogo .logo {
     display: inline-block;
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
+    margin: 16px;
     background-image: url("../images/logo.png");
     background-color: #212227;
     background-size: cover;
 }
 
-#loginContainer {
+#mainLogo .mainTitle {
+    font-size: 30px;
+    font-family: "nanumExtraBold";
+}
+
+#mainLogo .smallText {
+    font-size: 15px;
+    font-family: "nanumBold";
+}
+
+#loginBox {
     width: 500px;
     height: 300px;
     background-color: #ffffff;
-    margin: 10vh auto;
+    /* margin: 10vh auto; */
     padding: 16px;
     display: flex;
     flex-direction: column;
@@ -150,14 +205,15 @@
     border: 1px solid #ddd;
 }
 
-#loginContainer input {
+#loginBox input {
     width: 400px;
     height: 50px;
     margin: 8px;
     border-radius: 10px;
+    font-family: none;
 }
 
-#loginContainer .longButton {
+#loginBox .longButton {
     width: 400px;
     height: 50px;
     margin: 8px;
@@ -168,19 +224,19 @@
     font-weight: bold;
 }
 
-#loginContainer .loginButton {
+#loginBox .loginButton {
     background-color: #ff8850;
 }
 
-#loginContainer .loginButton:hover {
+#loginBox .loginButton:hover {
     background-color: #d6632e;
 }
 
-#loginContainer .signUpButton {
+#loginBox .signUpButton {
     background-color: #ff8888;
 }
 
-#loginContainer .signUpButton:hover {
+#loginBox .signUpButton:hover {
     background-color: rgb(219, 71, 71);
 }
 
@@ -189,10 +245,26 @@
 /* 회원가입 시작 */
 
 #signUpContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 100px;
+}
+
+#signUpContainer h1 {
+    width: 80%;
+    margin: 50px;
+    padding: 16px;
+    text-align: center;
+    font-family: "nanumExtraBold";
+    border-bottom: 3px solid #ff8850;
+}
+
+#signUpBox {
     width: 500px;
     height: 500px;
     background-color: #ffffff;
-    margin: 10vh auto;
     padding: 16px;
     display: flex;
     flex-direction: column;
@@ -203,34 +275,35 @@
     border: 1px solid #ddd;
 }
 
-#signUpContainer .flexLine {
+#signUpBox .flexLine {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-#signUpContainer .idBox {
+#signUpBox .idBox {
     width: 315px;
     height: 50px;
     margin: 8px;
     border-radius: 10px;
 }
 
-#signUpContainer input {
+#signUpBox input {
     width: 400px;
     height: 50px;
     margin: 8px;
     border-radius: 10px;
+    font-family: none;
 }
 
-#signUpContainer .pwdText {
+#signUpBox .pwdText {
     font-size: 12px;
     margin-left: 32px;
     margin-right: auto;
     color: red;
 }
 
-#signUpContainer .checkBtn {
+#signUpBox .checkBtn {
     display: inline-block;
     width: 70px;
     height: 50px;
@@ -243,12 +316,12 @@
     font-weight: bold;
 }
 
-#signUpContainer .checkBtn:hover {
+#signUpBox .checkBtn:hover {
     color: white;
     background-color: #d6632e;
 }
 
-#signUpContainer .signUpButton {
+#signUpBox .signUpButton {
     width: 400px;
     height: 50px;
     margin: 8px;
@@ -260,7 +333,7 @@
     color: white;
 }
 
-#signUpContainer .signUpButton:hover { 
+#signUpBox .signUpButton:hover { 
     color: white;
     background-color: rgb(219, 71, 71);
 }
@@ -268,15 +341,6 @@
 /* 회원가입 끝 */
 
 /* 프로필 시작 */
-
-#app {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-}
 
 #mainContent {
     width: 100vw;
@@ -298,7 +362,7 @@
         "area3 area4 area5"
     ;
     border-radius: 10px;
-    box-shadow: 3px 3px 3px #808080;
+    box-shadow: 3px 3px 3px #4d4d4d;
     border: 1px solid black;
 }
 .area1 {
@@ -313,21 +377,27 @@
     grid-area: area2;
     padding: 30px;
     color: rgb(250, 250, 250);
-    font-weight: bold;
+    
+}
+.area2 * {
+    margin: 8px;
 }
 .area2 .nickname {
-    font-size: 30px;
-    font-weight: bold;
+    font-size: 28px;
     margin-bottom: 32px;
+    font-family: "nanumBold";
 }
 .area2 .season {
     font-size: 16px;
+    font-family: "nanumBold";
 }
 .area2 .rankTier {
     font-size: 20px;
+    font-family: "nanumBold";
 }
 .area2 .rp {
-    font-size: 28px;
+    font-size: 50px;
+    font-family: "nanumExtraBold";
 }
 
 .area3 {
@@ -362,7 +432,9 @@
 #gridContainer .rankImg {
     width: 100%;
     height: 100%;
-    background-size: cover;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
     margin: 16px;
 }
 
@@ -395,6 +467,7 @@
     margin: 16px;
     border-radius: 10px;
     background-size: cover;
+    background-position: center;
 }
 
 /* 프로필 끝 */
@@ -429,6 +502,10 @@
     margin-top: 0px;
 }
 
+.flexLine > h3 {
+    font-family: "nanumBold";
+}
+
 #statsContainer .absolutePivot {
     position: relative;
 }
@@ -441,8 +518,8 @@
     outline: none;
     cursor: pointer;
     border-radius: 5px;
-    font-weight: bold;
     color: white;
+    font-family: "nanumBold";
 }
 
 #statsContainer .menuBtn {
@@ -482,7 +559,7 @@
     border: none;
     border-radius: 5px;
     color: white;
-    font-weight: bold;
+    font-family: "nanumBold";
 }
 #menuCheckTable .applyBtn:hover {
     background-color: #db6c38;
@@ -506,6 +583,7 @@
     background-color: #43454e;
     color: white;
     font-size: 16px;
+    font-family: "nanumBold";
 }
 
 #tableStats td {
@@ -516,6 +594,10 @@
 
 #tableStats .charCell {
     width: 250px;
+}
+
+.textBold {
+    font-family: "nanumBold";
 }
 
 .statsChar {
@@ -532,8 +614,11 @@
     height: 50px;
     margin: 16px;
     background-color: #838383;
+    background-size: contain;
+    background-position: center;
     border-radius: 50%;
 }
+
 
 /* 캐릭터 끝 */
 
@@ -560,6 +645,14 @@
     border: 1px solid #ddd;
 }
 
+#gamesContainer .alignCenter {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 #gamesContainer .gameCell {
     width: auto;
     height: 100px;
@@ -581,6 +674,8 @@
     width: 50px;
     height: 50px;
     background-color: #ddd;
+    border-radius: 50%;
+    background-size: contain;
 }
 
 .gameCell > div {
@@ -592,41 +687,45 @@
     height: 100%;
     border-radius: 5px;
     border-left: 5px solid rgb(99, 211, 99);
+    font-family: "nanumBold";
 }
 #gamesContainer .over3 {
     margin: 0px;
     height: 100%;
     border-radius: 5px;
     border-left: 5px solid rgb(60, 145, 214);
+    font-family: "nanumBold";
 }
 #gamesContainer .under3 {
     margin: 0px;
     height: 100%;
     border-radius: 5px;
     border-left: 5px solid #aaa;
+    font-family: "nanumBold";
 }
 
 #gamesContainer .over1Text {
     color: rgb(99, 211, 99);
-    font-weight: bold;
+    font-family: "nanumExtraBold";
     font-size: 20px;
 }
 #gamesContainer .over3Text {
     color: rgb(60, 145, 214);
-    font-weight: bold;
+    font-family: "nanumExtraBold";
     font-size: 20px;
 }
 #gamesContainer .under3Text {
     color: #aaa;
-    font-weight: bold;
+    font-family: "nanumExtraBold";
     font-size: 20px;
 }
 
 #gamesContainer .smallText {
-    font-size: 12px;
+    margin-top: 8px;
+    font-size: 13px;
 }
 #gamesContainer .boldText {
-    font-weight: bold;
+    font-family: "nanumBold";
 }
 
 #navigation {
@@ -643,7 +742,7 @@
     border-radius: 5px;
     background-color: #ff8850;
     color: white;
-    font-weight: bold;
+    font-family: "nanumBold";
 }
 
 #navigation .naviBtn:hover {
@@ -685,6 +784,7 @@
 #footer .footerText {
     display: inline-block;
     color: white;
+    font-family: "nanumBold";
 }
 
 #footer p {
@@ -692,6 +792,25 @@
     font-size: 10px;
     margin-left: 16px;
 }
+
+/* footer 끝 */
+
+/* 폰트 시작 */
+
+@font-face {
+    font-family: "nanumExtraBold";
+    src: url("../font/NanumSquareEB.otf") format('opentype');
+}
+@font-face {
+    font-family: "nanumBold";
+    src: url("../font/NanumSquareB.otf") format('opentype');
+}
+@font-face {
+    font-family: "nanumNormal";
+    src: url("../font/NanumSquareL.otf") format('opentype');
+}
+
+/* 폰트 끝 */
 
 /* 기타 */
 
@@ -711,7 +830,7 @@
 14 키아라
 15 시셀라
 16 실비아
-17 아드
+17 아드리아나
 18 쇼이치
 19 엠마
 20 레녹스
@@ -759,7 +878,7 @@
 62 테오도르
 63 이안
 64 바냐
-65 뎁마
+65 데비&마를렌
 66 아르다
 67 아비게일
 68 알론소

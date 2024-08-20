@@ -28,7 +28,7 @@
                 
                 <button class="basicBtn initBtn" @click="fnNavInit">전적 갱신</button>
                 <div class="menuItem">
-                    <div>지난 갱신일</div>
+                    <div class="updateLabel">지난 갱신일</div>
                     <div>{{userInfo.updateTime}}</div>
                 </div>
             </div>
@@ -74,11 +74,25 @@
                         <th v-if="menuCheck.isViewTeamKill">평균 팀 킬 수</th>
                         <th v-if="menuCheck.isViewCcTime">평균 cc 시간</th>
                     </tr>
-                    <tr v-for="item of charInfo">
+                    <template v-if="charInfo.length == 0">
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </template>
+                    <template v-else>
+                    <tr v-for="(item, index) of charInfo">
                         <td class="statsChar charCell">
-                            <div class="statsCharImg">{{item.CHARACTER_NUM}}</div>
+                            <div class="statsCharImg" :style="fnSetCharImg(item.CHARACTER_NUM)"></div>
                             <div>
-                                <div>{{item.CHARACTER_NUM}}</div>
+                                <div class="textBold">{{charName[ index ].charName}}</div>
                                 <div>{{item.MATCHES}}판</div>
                             </div>
                         </td>
@@ -93,6 +107,7 @@
                         <td v-if="menuCheck.isViewTeamKill">{{item.TEAM_KILL}}</td>
                         <td v-if="menuCheck.isViewCcTime">{{item.CC_TIME_TO_PLAYER}}</td>
                     </tr>
+                 </template>
                 </table>
             </div>
         </section>
@@ -117,34 +132,37 @@
                     mmr : ""
                 },
                 charInfo : [],
+                charName : [],
                 menuCheck : {
-                    isViewRank : false,
-                    isViewToDamage : false,
-                    isViewFromDamage : false,
-                    isViewHeal : false,
-                    isViewGainRp : false,
-                    isViewKills : false,
-                    isViewDeaths : false,
-                    isViewAssistant : false,
-                    isViewTeamKill : false,
-                    isViewCcTime : false
+                    isViewRank : true,
+                    isViewToDamage : true,
+                    isViewFromDamage : true,
+                    isViewHeal : true,
+                    isViewGainRp : true,
+                    isViewKills : true,
+                    isViewDeaths : true,
+                    isViewAssistant : true,
+                    isViewTeamKill : true,
+                    isViewCcTime : true
                 },
                 customMenuCheck: {
-                    isViewRank : false,
-                    isViewToDamage : false,
-                    isViewFromDamage : false,
-                    isViewHeal : false,
-                    isViewGainRp : false,
-                    isViewKills : false,
-                    isViewDeaths : false,
-                    isViewAssistant : false,
-                    isViewTeamKill : false,
-                    isViewCcTime : false
+                    isViewRank : true,
+                    isViewToDamage : true,
+                    isViewFromDamage : true,
+                    isViewHeal : true,
+                    isViewGainRp : true,
+                    isViewKills : true,
+                    isViewDeaths : true,
+                    isViewAssistant : true,
+                    isViewTeamKill : true,
+                    isViewCcTime : true
                 },
                 mostCharInfo: [{}, {}, {}],
                 isLoading: false,
                 isNext : true,
-                isShowMenu : false
+                isShowMenu : false,
+                backUrl : "background-image: url(../images/1_small.png);",
+                htmlArr : []
             };
         },
         methods: {
@@ -245,6 +263,7 @@
                         // 재귀 종료 조건
                         if (data.next == undefined || !this.isNext) {
                             this.isLoading = false;
+                            location.reload(true);
                             return;
                         }
 
@@ -300,6 +319,7 @@
                    contentType: "application/json",
                    success: (data) => {
                         this.charInfo = data;
+                        this.fnSetCharName();
                    }
                 });
             },
@@ -330,13 +350,8 @@
                     data: JSON.stringify({"userId" : userId}),
                     contentType: "application/json",
                     success: (data) => {
-                        // 저장된 데이터가 없을 때는 기본값
+                        // 저장된 데이터가 없을 때는 초기화 값 사용
                         if (data.length == 0) {
-                            this.menuCheck.isViewRank     = true;
-                            this.menuCheck.isViewGainRp   = true;
-                            this.menuCheck.isViewToDamage = true;
-                            this.menuCheck.isViewTeamKill = true;
-                            this.menuCheck.isViewKills    = true;
                             return;
                         }
                         // 있다면 db에서 저장된 설정 불러오기
@@ -373,9 +388,92 @@
                 menu1.isViewAssistant  = menu2.isViewAssistant
                 menu1.isViewTeamKill   = menu2.isViewTeamKill
                 menu1.isViewCcTime     = menu2.isViewCcTime
+            },
+            fnSetCharImg(charNum) {
+                return {
+                    backgroundImage : `url(./images/${charNum}_small.png)`
+                }
+            },
+            fnSetCharName() {
+                for (let info of this.charInfo) {
+                    if (info.CHARACTER_NUM == 1) { this.charName.push({"charName" : "재키"}); };
+                    if (info.CHARACTER_NUM == 2) { this.charName.push({"charName" : "아야"}); };
+                    if (info.CHARACTER_NUM == 3) { this.charName.push({"charName" : "현우"}); };
+                    if (info.CHARACTER_NUM == 4) { this.charName.push({"charName" : "매그"}); };
+                    if (info.CHARACTER_NUM == 5) { this.charName.push({"charName" : "피오라"}); };
+                    if (info.CHARACTER_NUM == 6) { this.charName.push({"charName" : "나딘"}); };
+                    if (info.CHARACTER_NUM == 7) { this.charName.push({"charName" : "자히르"}); };
+                    if (info.CHARACTER_NUM == 8) { this.charName.push({"charName" : "하트"}); };
+                    if (info.CHARACTER_NUM == 9) { this.charName.push({"charName" : "아이솔"}); };
+                    if (info.CHARACTER_NUM == 10) { this.charName.push({"charName" : "리다이린"}); };
+                    if (info.CHARACTER_NUM == 11) { this.charName.push({"charName" : "유키"}); };
+                    if (info.CHARACTER_NUM == 12) { this.charName.push({"charName" : "혜진"}); };
+                    if (info.CHARACTER_NUM == 13) { this.charName.push({"charName" : "쇼우"}); };
+                    if (info.CHARACTER_NUM == 14) { this.charName.push({"charName" : "키아라"}); };
+                    if (info.CHARACTER_NUM == 15) { this.charName.push({"charName" : "시셀라"}); };
+                    if (info.CHARACTER_NUM == 16) { this.charName.push({"charName" : "실비아"}); };
+                    if (info.CHARACTER_NUM == 17) { this.charName.push({"charName" : "아드리아나"}); };
+                    if (info.CHARACTER_NUM == 18) { this.charName.push({"charName" : "쇼이치"}); };
+                    if (info.CHARACTER_NUM == 19) { this.charName.push({"charName" : "엠마"}); };
+                    if (info.CHARACTER_NUM == 20) { this.charName.push({"charName" : "레녹스"}); };
+                    if (info.CHARACTER_NUM == 21) { this.charName.push({"charName" : "로지"}); };
+                    if (info.CHARACTER_NUM == 22) { this.charName.push({"charName" : "루크"}); };
+                    if (info.CHARACTER_NUM == 23) { this.charName.push({"charName" : "캐시"}); };
+                    if (info.CHARACTER_NUM == 24) { this.charName.push({"charName" : "아델라"}); };
+                    if (info.CHARACTER_NUM == 25) { this.charName.push({"charName" : "버니스"}); };
+                    if (info.CHARACTER_NUM == 26) { this.charName.push({"charName" : "바바라"}); };
+                    if (info.CHARACTER_NUM == 27) { this.charName.push({"charName" : "알렉스"}); };
+                    if (info.CHARACTER_NUM == 28) { this.charName.push({"charName" : "수아"}); };
+                    if (info.CHARACTER_NUM == 29) { this.charName.push({"charName" : "레온"}); };
+                    if (info.CHARACTER_NUM == 30) { this.charName.push({"charName" : "일레븐"}); };
+                    if (info.CHARACTER_NUM == 31) { this.charName.push({"charName" : "리오"}); };
+                    if (info.CHARACTER_NUM == 32) { this.charName.push({"charName" : "윌리엄"}); };
+                    if (info.CHARACTER_NUM == 33) { this.charName.push({"charName" : "니키"}); };
+                    if (info.CHARACTER_NUM == 34) { this.charName.push({"charName" : "나타폰"}); };
+                    if (info.CHARACTER_NUM == 35) { this.charName.push({"charName" : "얀"}); };
+                    if (info.CHARACTER_NUM == 36) { this.charName.push({"charName" : "이바"}); };
+                    if (info.CHARACTER_NUM == 37) { this.charName.push({"charName" : "다니엘"}); };
+                    if (info.CHARACTER_NUM == 38) { this.charName.push({"charName" : "제니"}); };
+                    if (info.CHARACTER_NUM == 39) { this.charName.push({"charName" : "카밀로"}); };
+                    if (info.CHARACTER_NUM == 40) { this.charName.push({"charName" : "클로에"}); };
+                    if (info.CHARACTER_NUM == 41) { this.charName.push({"charName" : "요한"}); };
+                    if (info.CHARACTER_NUM == 42) { this.charName.push({"charName" : "비앙카"}); };
+                    if (info.CHARACTER_NUM == 43) { this.charName.push({"charName" : "셀린"}); };
+                    if (info.CHARACTER_NUM == 44) { this.charName.push({"charName" : "에키온"}); };
+                    if (info.CHARACTER_NUM == 45) { this.charName.push({"charName" : "마이"}); };
+                    if (info.CHARACTER_NUM == 46) { this.charName.push({"charName" : "에이든"}); };
+                    if (info.CHARACTER_NUM == 47) { this.charName.push({"charName" : "라우라"}); };
+                    if (info.CHARACTER_NUM == 48) { this.charName.push({"charName" : "띠아"}); };
+                    if (info.CHARACTER_NUM == 49) { this.charName.push({"charName" : "펠릭스"}); };
+                    if (info.CHARACTER_NUM == 50) { this.charName.push({"charName" : "엘레나"}); };
+                    if (info.CHARACTER_NUM == 51) { this.charName.push({"charName" : "프리야"}); };
+                    if (info.CHARACTER_NUM == 52) { this.charName.push({"charName" : "아디나"}); };
+                    if (info.CHARACTER_NUM == 53) { this.charName.push({"charName" : "마커스"}); };
+                    if (info.CHARACTER_NUM == 54) { this.charName.push({"charName" : "칼라"}); };
+                    if (info.CHARACTER_NUM == 55) { this.charName.push({"charName" : "에스텔"}); };
+                    if (info.CHARACTER_NUM == 56) { this.charName.push({"charName" : "피올로"}); };
+                    if (info.CHARACTER_NUM == 57) { this.charName.push({"charName" : "마르티나"}); };
+                    if (info.CHARACTER_NUM == 58) { this.charName.push({"charName" : "헤이즈"}); };
+                    if (info.CHARACTER_NUM == 59) { this.charName.push({"charName" : "아이작"}); };
+                    if (info.CHARACTER_NUM == 60) { this.charName.push({"charName" : "타지아"}); };
+                    if (info.CHARACTER_NUM == 61) { this.charName.push({"charName" : "이렘"}); };
+                    if (info.CHARACTER_NUM == 62) { this.charName.push({"charName" : "테오도르"}); };
+                    if (info.CHARACTER_NUM == 63) { this.charName.push({"charName" : "이안"}); };
+                    if (info.CHARACTER_NUM == 64) { this.charName.push({"charName" : "바냐"}); };
+                    if (info.CHARACTER_NUM == 65) { this.charName.push({"charName" : "데비&마를렌"}); };
+                    if (info.CHARACTER_NUM == 66) { this.charName.push({"charName" : "아르다"}); };
+                    if (info.CHARACTER_NUM == 67) { this.charName.push({"charName" : "아비게일"}); };
+                    if (info.CHARACTER_NUM == 68) { this.charName.push({"charName" : "알론소"}); };
+                    if (info.CHARACTER_NUM == 69) { this.charName.push({"charName" : "레니"}); };
+                    if (info.CHARACTER_NUM == 70) { this.charName.push({"charName" : "츠바메"}); };
+                    if (info.CHARACTER_NUM == 71) { this.charName.push({"charName" : "케네스"}); };
+                    if (info.CHARACTER_NUM == 72) { this.charName.push({"charName" : "카티야"}); };
+                    if (info.CHARACTER_NUM == 73) { this.charName.push({"charName" : "샬럿"}); };
+                    if (info.CHARACTER_NUM == 74) { this.charName.push({"charName" : "다르코"}); };
+                    if (info.CHARACTER_NUM == 75) { this.charName.push({"charName" : "르노어"}); };
+                }
             }
         },
-        
         mounted() {
             this.fnLoginCheck();
             this.fnLoadSessionInfo();
