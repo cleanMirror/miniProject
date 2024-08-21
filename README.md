@@ -8,6 +8,16 @@
 
 ![profile](https://github.com/cleanMirror/imageSample/blob/main/profile.png)
 
+로그인을 하면 사용자의 요약 정보와 모스트 캐릭터 정보를 제공합니다.
+
+![charStats](https://github.com/cleanMirror/imageSample/blob/main/charStats.png)
+
+캐릭터별 통계 정보를 제공하며, 나에게 필요한 메뉴를 커스텀할 수 있습니다.
+
+![record](https://github.com/cleanMirror/imageSample/blob/main/record.png)
+
+최근 전적 정보를 제공합니다.
+
 ---
 
 ## 개발 기간
