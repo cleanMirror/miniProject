@@ -4,13 +4,12 @@
 
 ---
 
-##개발 기간
+## 개발 기간
 + 24/08/12 ~ 24/08/20
 
 ---
 
-##사용 언어
-html, css, vue.js, node.js, javascript, oracle
+## 사용 언어
 
 ![Oracle](https://img.shields.io/badge/Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white)
 ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
