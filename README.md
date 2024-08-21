@@ -1,4 +1,6 @@
-# 이터널 리턴 전적 분석 사이트
+# Return GG
+
+![login](https://github.com/cleanMirror/imageSample/blob/main/login.png)
 
 이터널 리턴의 전적을 분석해주는 사이트입니다.
 
