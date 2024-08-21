@@ -161,6 +161,9 @@
                             success: (data) => {
                                 this.userInfo.mmr = data[ 0 ].MMR;
                                 sessionStorage.setItem("mmr", data[ 0 ].MMR);
+                                        
+                                this.fnCalcMMRTier();
+                                this.fnSetTierBackground();
                             }
                         });
 
@@ -303,8 +306,8 @@
             this.fnLoginCheck();
             this.fnLoadSessionInfo();
             this.fnUpdateMMR();
-            this.fnCalcMMRTier();
-            this.fnSetTierBackground();
+            // this.fnCalcMMRTier();
+            // this.fnSetTierBackground();
         }
     });
     app.mount('#app');
