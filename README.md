@@ -3,6 +3,7 @@
 ![login](https://github.com/cleanMirror/imageSample/blob/main/login.png)
 
 이터널 리턴의 전적을 분석해주는 사이트입니다.
+
 이터널 리턴이 제공하는 api에서 데이터를 가져와 DB에 저장하고, 이 정보를 가지고 유용한 데이터를 사용자에게 제공합니다.
 
 ![profile](https://github.com/cleanMirror/imageSample/blob/main/profile.png)
