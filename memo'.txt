@@ -1,0 +1,23 @@
+3754521
+2hjkR0q4z62fTg87aY6O3giO9jcQ70C7rP1uSwwc
+
+
+4883193
+
+var inputItem = {
+                                "userNum" : item.userNum,
+                                "characterNum" : item.characterNum,
+                                "gameRank" : item.gameRank,
+                                "damageToPlayer" : item.damageToPlayer,
+                                "damageFromPlayer" : item.damageFromPlayer,
+                                "teamRecover" : item.teamRecover,
+                                "mmrGain" : item.mmrGain,
+                                "playerKill" : item.playerKill,
+                                "playerDeaths" : item.playerDeaths,
+                                "playerAssistant" : item.playerAssistant,
+                                "teamKill" : item.teamKill,
+                                "ccTimeToPlayer" : item.ccTimeToPlayer
+                            }
+
+
+37838806
