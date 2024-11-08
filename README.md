@@ -1,7 +1,12 @@
 # Return GG
 
-## 💡 사이트 소개
 ![login](https://github.com/cleanMirror/imageSample/blob/main/login.png)
+
+## 📕 프로젝트 목적
+
+* Vue.js와 Express서버, Oracle 데이터베이스를 이용한 고객관리 사이트
+
+## 💡 사이트 소개
 
 * 이터널 리턴의 전적을 분석해주는 사이트입니다.
 * 이터널 리턴이 제공하는 api에서 데이터를 가져와 DB에 저장하고, 이 정보를 재가공하여 유용한 전적 정보를 제공합니다.
