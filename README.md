@@ -1,6 +1,7 @@
 # Return GG
 
-![login](https://github.com/cleanMirror/imageSample/blob/main/login.png)
+![login](https://github.com/user-attachments/assets/39cdb67d-088d-4384-be7c-bda0a2485794)
+
 
 ## 📕 프로젝트 목적
 
@@ -19,19 +20,19 @@
 
 ## 🖼 기능 및 화면 구성
 
-![profile](https://github.com/cleanMirror/imageSample/blob/main/profile.png)
+![profile](https://github.com/user-attachments/assets/6c59e289-3560-4c46-922c-6e8f14b1d141)
 
 
 * 로그인을 하면 사용자의 요약 정보와 모스트 캐릭터 정보를 제공합니다.
 
 
-![charStats](https://github.com/cleanMirror/imageSample/blob/main/charStats.png)
+![charStats](https://github.com/user-attachments/assets/8ac5cc6f-a160-4fa0-9659-d93611360420)
 
 
 * 캐릭터별 통계 정보를 제공하며, 나에게 필요한 메뉴를 커스텀할 수 있습니다.
 
 
-![record](https://github.com/cleanMirror/imageSample/blob/main/record.png)
+![record](https://github.com/user-attachments/assets/10aead63-2bfe-4e28-86c5-e6e96ca84609)
 
 
 * 최근 전적 정보를 제공합니다.
