@@ -49,3 +49,9 @@
 ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
 ![Oracle](https://img.shields.io/badge/Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white)
+
+
+## 🙇‍♂️ 프로젝트 후기
+
+* 게임사의 API서버를 이용한 프로젝트로, API문서를 보고, 분석하고 활용하는 경험을 쌓을 수 있었다.
+* 사용자에게 어떤 정보가 필요할지 고민하며 사용자 중심 설계를 경험할 수 있었다.
